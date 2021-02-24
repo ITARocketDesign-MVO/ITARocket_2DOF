@@ -36,7 +36,20 @@ function [deltat, T, X, rocket, prop, trilho] = flightbi(plot_logical, stepsize)
     end
     %mextra = 4;
     %mmotor = 3.610;
-    ROCKET.Empty_mass = 23;              % Massa vazia - sem propelente - do foguete       (kg)
+    %massa alterada considerando motor de alumínio
+    %com mesmo volume que o anterior (de aço)
+    %fonte:
+    %Peso do veículo (libras)
+    %34,5
+    %Caixa / estrutura do motor vazia (libras)
+    %22 - convertido pra alumínio
+    %Peso propulsor (libras)
+    %9,9
+    %Peso da carga útil (libras)
+    %17,6
+    %Peso de decolagem (libras) (soma dos valores acima)
+    %84
+    ROCKET.Empty_mass = 31.555;              % Massa vazia - sem propelente - do foguete       (kg)
     ROCKET.Area = (pi/4)*(0.1524)^2;     % Área máxima transversal do foguete (m^2)
     ROCKET.Area_drogue = (pi*(0.8)^2)/4;        % Área do paraquedas Drogue   (m^2)
     ROCKET.Area_main = (pi*(4)^2) / 4;          % Área do paraquedas Main     (m^2)
@@ -50,7 +63,7 @@ function [deltat, T, X, rocket, prop, trilho] = flightbi(plot_logical, stepsize)
     Efficiency = 0.95;
     Isp = 224*Efficiency;
     
-    PROP.Mass = 5.8;                              % Massa total de propelente    (kg)
+    PROP.Mass = 4.4906;                              % Massa total de propelente    (kg)
     PROP.Burn_time = 5.5;                         % Tempo de queima do propelente (s)
     PROP.Thrust = 'Empuxo_completo.dat';          % Empuxo do motor. Pode ser uma constante ou uma tabela.
     PROP.Table = 0;
