@@ -3,5 +3,5 @@
 
 
 
-Atualmente mantido por Pulga, Hipster, Misk, Isabela
+Agora mantido por Pulga, Hipster, Misk, Isabela
 
