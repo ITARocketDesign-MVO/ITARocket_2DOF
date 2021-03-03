@@ -38,7 +38,7 @@ function [deltat, T, X, rocket, prop, trilho] = flightbi(plot_logical, stepsize)
     %mmotor = 3.610;
     %massa alterada considerando motor de alumínio
     %com mesmo volume que o anterior (de aço)
-    %fonte:
+    %fonte (dados antigos):
     %Peso do veículo (libras)
     %34,5
     %Caixa / estrutura do motor vazia (libras)
@@ -49,7 +49,12 @@ function [deltat, T, X, rocket, prop, trilho] = flightbi(plot_logical, stepsize)
     %17,6
     %Peso de decolagem (libras) (soma dos valores acima)
     %84
-    ROCKET.Empty_mass = 31.555;              % Massa vazia - sem propelente - do foguete       (kg)
+    %massa vazia estimada com case de alumínio = 31.555
+    
+    %34.5lb + 3.418kg (case do motor de alumínio- Yuri)
+    %+4kg (1 payload ao invés de 2 - Saliba)
+    %massa correta 23.0669
+    ROCKET.Empty_mass = 23.0669;              % Massa vazia - sem propelente - do foguete       (kg)
     ROCKET.Area = (pi/4)*(0.1524)^2;     % Área máxima transversal do foguete (m^2)
     ROCKET.Area_drogue = (pi*(0.8)^2)/4;        % Área do paraquedas Drogue   (m^2)
     ROCKET.Area_main = (pi*(4)^2) / 4;          % Área do paraquedas Main     (m^2)
