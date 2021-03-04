@@ -54,7 +54,7 @@ function [deltat, T, X, rocket, prop, trilho] = flightbi(plot_logical, stepsize)
     %34.5lb + 3.418kg (case do motor de alumínio- Yuri)
     %+4kg (1 payload ao invés de 2 - Saliba)
     %massa correta 23.0669
-    ROCKET.Empty_mass = 23.0669;              % Massa vazia - sem propelente - do foguete       (kg)
+    ROCKET.Empty_mass = 27.0669;              % Massa vazia - sem propelente - do foguete       (kg)
     ROCKET.Area = (pi/4)*(0.1524)^2;     % Área máxima transversal do foguete (m^2)
     ROCKET.Area_drogue = (pi*(0.8)^2)/4;        % Área do paraquedas Drogue   (m^2)
     ROCKET.Area_main = (pi*(4)^2) / 4;          % Área do paraquedas Main     (m^2)
@@ -69,8 +69,8 @@ function [deltat, T, X, rocket, prop, trilho] = flightbi(plot_logical, stepsize)
     Isp = 224*Efficiency;
     
     PROP.Mass = 4.4906;                              % Massa total de propelente    (kg)
-    PROP.Burn_time = 5.5;                         % Tempo de queima do propelente (s)
-    PROP.Thrust = 'Empuxo_completo.dat';          % Empuxo do motor. Pode ser uma constante ou uma tabela.
+    PROP.Burn_time = 4;                         % Tempo de queima do propelente (s)
+    PROP.Thrust = 2800;          % Empuxo do motor. Pode ser uma constante ou uma tabela.
     PROP.Table = 0;
     
     if (ischar(PROP.Thrust))
@@ -141,4 +141,5 @@ function [deltat, T, X, rocket, prop, trilho] = flightbi(plot_logical, stepsize)
     deltat = toc;
     %max(X(:,2)) % Mostra apogeu na janela de comando.
     %max(X(:,4))
+    disp(max(sqrt(X(:,4).^2 + X(:,3).^2)))
 end
