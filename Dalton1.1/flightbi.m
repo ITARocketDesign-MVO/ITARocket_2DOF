@@ -54,10 +54,10 @@ function [deltat, T, X, rocket, prop, trilho] = flightbi(plot_logical, stepsize)
     %34.5lb + 3.418kg (case do motor de alumínio- Yuri)
     %+4kg (1 payload ao invés de 2 - Saliba)
     %massa correta 23.0669
-    ROCKET.Empty_mass = 27.0669;              % Massa vazia - sem propelente - do foguete       (kg)
+    ROCKET.Empty_mass = 22.399;              % Massa vazia - sem propelente - do foguete       (kg)
     ROCKET.Area = (pi/4)*(0.1524)^2;     % Área máxima transversal do foguete (m^2)
-    ROCKET.Area_drogue = (pi*(0.8)^2)/4;        % Área do paraquedas Drogue   (m^2)
-    ROCKET.Area_main = (pi*(4)^2) / 4;          % Área do paraquedas Main     (m^2)
+    ROCKET.Area_drogue = (pi*(0.7)^2)/4;        % Área do paraquedas Drogue   (m^2)
+    ROCKET.Area_main = (pi*(2.5)^2) / 4;          % Área do paraquedas Main     (m^2)
     ROCKET.Altitude = 1294;              % Altitude de lançamento        (m)
     ROCKET.G = -grav(ROCKET.Altitude);   % Gravidade local           (m/s^2)
     ROCKET.CD = 0.5;                     % CD do foguete ou nome do arquivo 
@@ -68,10 +68,10 @@ function [deltat, T, X, rocket, prop, trilho] = flightbi(plot_logical, stepsize)
     Efficiency = 0.95;
     Isp = 224*Efficiency;
     
-    PROP.Mass = 4.4906;                              % Massa total de propelente    (kg)
+    PROP.Mass = 4.5603;                              % Massa total de propelente    (kg)
     PROP.Burn_time = 4;                         % Tempo de queima do propelente (s)
-    PROP.Thrust = 2800;          % Empuxo do motor. Pode ser uma constante ou uma tabela.
-    PROP.Table = 0;
+    PROP.Thrust = 'thrust_data';          % Empuxo do motor. Pode ser uma constante ou uma tabela.
+    PROP.Table = 1;
     
     if (ischar(PROP.Thrust))
         PROP.Table = 1;
@@ -80,6 +80,7 @@ function [deltat, T, X, rocket, prop, trilho] = flightbi(plot_logical, stepsize)
     if (PROP.Table)
         % Interpolacao dos dados de Tracao!
         dataThrust = load(PROP.Thrust);
+        dataThrust = dataThrust.thrust_data;
         tThrust = dataThrust(:,1);
         ForceThrust = dataThrust(:,2);
         % criar uma funcao de interpolacao

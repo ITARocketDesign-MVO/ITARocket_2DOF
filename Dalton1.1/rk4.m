@@ -20,9 +20,13 @@ function [T,X] = rk4(dyna, tspan, X0)
         % Copia a Informacao da massa no instante T
         m = ROCKET.Empty_mass;
         if j==4
+            disp('Drogue abre em')
+            disp(T(end))
             CD = ROCKET.CD_drogue;
             S = ROCKET.Area_drogue;
         elseif j==5
+            disp('Main abre em')
+            disp(T(end))
             CD = ROCKET.CD_main;
             S = ROCKET.Area_main;
         else

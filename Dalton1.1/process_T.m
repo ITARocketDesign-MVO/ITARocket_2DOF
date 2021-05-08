@@ -4,8 +4,8 @@ global SIM
 
     if ischar(X)
         data = load(X);
-        t = data(:,1);
-        T = data(:,2);
+        t = data.thrust_data(:,1);
+        T = data.thrust_data(:,2);
     elseif numel(X)==1
         t = [0, PROP.Burn_time]; %intervalo de tempo
         T = [X, X];
