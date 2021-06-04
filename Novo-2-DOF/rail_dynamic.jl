@@ -12,7 +12,7 @@ function forces_rail(X::StateVector, t::Float64, env::Environment, rocket::Rocke
     Friction = N * env.rail.μ #Fat
     
     Fx = max(cos(θ) * (rocket.propulsion.thrust - Drag - Friction) - sin(θ) * N, 0)      #forças resultantes em x e em y
-    Fy = max(sin(θ) * (rocket.propulsion.thrust - Drag - Friction) + cos(θ) * N - W, 0)
+    Fy = max(sin(θ) * (rocket.propulsion.thrust - Drag - Friction) + cos(θ) * N - W, 0)  #há esse max para não acontecer do foguete "cair e atravessar o chão"
 
     return Fx, Fy
 end 
