@@ -11,8 +11,8 @@ function forces_rail(X::StateVector, t::Float64, env::Environment, rocket::Rocke
     N = W * cos(θ) #Força normal
     Friction = N * env.rail.μ #Fat
     
-    Fx = cos(θ) * (rocket.propulsion.thrust - Drag - Friction) - sin(θ) * N      #forças resultantes em x e em y
-    Fy = sin(θ) * (rocket.propulsion.thrust - Drag - Friction) + cos(θ) * N - W
+    Fx = max(cos(θ) * (rocket.propulsion.thrust - Drag - Friction) - sin(θ) * N, 0)      #forças resultantes em x e em y
+    Fy = max(sin(θ) * (rocket.propulsion.thrust - Drag - Friction) + cos(θ) * N - W, 0)
 
     return Fx, Fy
 end 
