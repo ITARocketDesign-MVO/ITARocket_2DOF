@@ -4,20 +4,15 @@ using .BaseDefinitions
 
 function forces_rail(X::StateVector, t::Float64, env::Environment, rocket::Rocket)
     M = X.m_comb + rocket.empty_mass #massa do foguete
-    W = M * env.g #W de Wheight, peso
+    W = M * env.g #W de Weight, peso
     θ = env.rail.θ_ground
     
     Drag = 1/2 * env.ρ * rocket.aed.area * rocket.aed.Cd * (X.vx^2 + X.vy^2) #F(resistencia do ar)=1/2*ρ*S*Cd*v^2
     N = W * cos(θ) #Força normal
     Friction = N * env.rail.μ #Fat
     
-    struct Fres #Fres <- forças resultantes
-        x
-        y
-    end
+    Fx = cos(θ) * (rocket.propulsion.thrust - Drag - Friction) - sin(θ) * N      #forças resultantes em x e em y
+    Fy = sin(θ) * (rocket.propulsion.thrust - Drag - Friction) + cos(θ) * N - W
 
-    Fres.x = cos(θ) * (rocket.propulsion.thrust - Drag - Friction) - sin(θ) * N
-    Fres.y = sin(θ) * (rocket.propulsion.thrust - Drag - Friction) + cos(θ) * N - W
-
-    return Fres
+    return Fx, Fy
 end 
