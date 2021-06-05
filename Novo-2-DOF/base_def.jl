@@ -1,5 +1,9 @@
 module BaseDefinitions
 
+#@TODO
+#acertar formato do CD e do empuxo
+#definir armazenamento da condição do foguete
+
 #exportar menos coisas? (só StateVector, Rkt e Amb)
 export StateVector, Aed, Parachute, Propulsion, Rocket, Rail, Environment
 
