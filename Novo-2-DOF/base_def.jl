@@ -1,7 +1,7 @@
 module BaseDefinitions
 
 #exportar menos coisas? (só StateVector, Rkt e Amb)
-export StateVector, Aed, Parachute, Propulsion, Rocket
+export StateVector, Aed, Parachute, Propulsion, Rocket, Rail, Environment
 
 
 struct StateVector
