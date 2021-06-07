@@ -1,7 +1,5 @@
-function rk4solver(t::Float64, X::StateVector,
-                dXdt::Function, dt::Float64)
-                            # Padronizando o 0.001 de step size
-
+function rk4solver(t::Float64, X::StateVector, dXdt::Function, dt::Float64)
+  
     k1 = dXdt(     t    ,        X         )
     k2 = dXdt(t + dt / 2, X + (dt / 2) * k1)
     k3 = dXdt(t + dt / 2, X + (dt / 2) * k2)
@@ -13,7 +11,8 @@ end
 
 function rk4solution((t0, tmax)::Tuple{Number, Number}, X0::StateVector,
                         dXdt::Function, dt::Float64=0.001)
-
+                              #Padronizando 0.001 de step size
+  
     t_range = t0:dt:tmax
     all_Xs = Dict{Float64, StateVector}(t0 => X0)
     # Ja testei, Dict eh mais rapido que Array
