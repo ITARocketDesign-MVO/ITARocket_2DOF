@@ -1,7 +1,8 @@
 #tudo que precisar ser testado, fazer nessa pasta
-include("../base_def.jl")
+include("../Rocket_2DOF.jl")
 
-using .BaseDefinitions
+using .Rocket_2DOF
+# using BenchmarkTools
 
 #criação de condições iniciais:
 
@@ -21,3 +22,9 @@ rocket = Rocket(23.5, motor, Aed(0.4, 0.08), drogue, main, "Rail")
 rail = Rail(5, 85, 0.03)
 
 env = Environment(9.81, 1.225, rail, 1294)
+
+# function f(t::Float64, X::StateVector)
+#     return StateVector(cos(t), -sin(t), -sin(t), -cos(t), X.m_comb)
+# end
+#
+# res = @benchmark rk4solution((0, 7), StateVector(0,1,1,0,1), f)

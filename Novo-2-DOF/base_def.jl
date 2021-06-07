@@ -1,9 +1,3 @@
-module BaseDefinitions
-
-#exportar menos coisas? (só StateVector, Rkt e Amb)
-export StateVector, Aed, Parachute, Propulsion, Rocket, Rail, Environment
-
-
 struct StateVector
     x::Float64
     y::Float64
@@ -12,8 +6,13 @@ struct StateVector
     m_comb::Float64
 end
 
+# Sugou pensar em int ou float
+StateVector(x, y, vx, vy, m_comb) = StateVector(Float64(x), Float64(y),
+                                                Float64(vx), Float64(vy),
+                                                Float64(m_comb))
+
 function Base.:+(vec1::StateVector, vec2::StateVector)
-    StateVector(vec1.x + vec2.x, 
+    StateVector(vec1.x + vec2.x,
                 vec1.y + vec2.y,
                 vec1.vx + vec2.vx,
                 vec1.vy + vec2.vy,
@@ -69,6 +68,4 @@ struct Environment
     ρ::Union{Float64, Function}
     rail::Rail
     launch_altittude::Real
-end
-
 end
