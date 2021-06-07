@@ -4,6 +4,7 @@ module Rocket_2DOF
 #exportar menos coisas? (só StateVector, Rkt e Amb)
 export StateVector, Aed, Parachute, Propulsion, Rocket, Rail, Environment
 
+# Rail Dynamics
 export forces_rail
 
 # Runge-Kutta
