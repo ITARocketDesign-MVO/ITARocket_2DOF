@@ -11,7 +11,7 @@ export forces_rail
 export rk4solver, rk4solution
 
 include("base_def.jl")
-include("rail_dynamic")
+include("rail_dynamic.jl")
 include("rk4solve.jl")
 
 end # module
