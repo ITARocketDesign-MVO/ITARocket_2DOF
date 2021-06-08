@@ -2,7 +2,7 @@
 include("../Rocket_2DOF.jl")
 
 using .Rocket_2DOF
-# using BenchmarkTools
+using BenchmarkTools
 
 #criação de condições iniciais:
 
@@ -16,15 +16,15 @@ main = Parachute(aed_drogue, (x::StateVector) -> x.y < 1294+300)
 
 motor = Propulsion(2000, 4.5, 6.5)
 
-#mudar a forma de armazenamento da condição de voo
+# #mudar a forma de armazenamento da condição de voo
 rocket = Rocket(23.5, motor, Aed(0.4, 0.08), drogue, main, "Rail")
 
 rail = Rail(5, 85, 0.03)
 
 env = Environment(9.81, 1.225, rail, 1294)
 
-# function f(t::Float64, X::StateVector)
-#     return StateVector(cos(t), -sin(t), -sin(t), -cos(t), X.m_comb)
-# end
-#
-# res = @benchmark rk4solution((0, 7), StateVector(0,1,1,0,1), f)
+function f(t::Float64, X::StateVector)
+    return StateVector(cos(t), -sin(t), -sin(t), -cos(t), X.m_comb)
+end
+
+res = @benchmark rk4solution((0, 7), StateVector(0,1,1,0,1), f)
