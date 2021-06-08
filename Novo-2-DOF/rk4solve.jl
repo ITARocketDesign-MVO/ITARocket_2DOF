@@ -5,7 +5,7 @@ function rk4solver(t::Float64, X::StateVector, dXdt::Function, dt::Float64)
     k3 = dXdt(t + dt / 2, X + (dt / 2) * k2)
     k4 = dXdt(  t + dt  ,      X + k3      )
 
-    X + (dt / 6) * (k1 + 2 * k2 + 2 * k3 + k4)
+    return X + (dt / 6) * (k1 + 2 * k2 + 2 * k3 + k4)
 
 end
 
