@@ -6,11 +6,6 @@ struct StateVector
     m_comb::Float64
 end
 
-# Sugou pensar em int ou float
-StateVector(x, y, vx, vy, m_comb) = StateVector(Float64(x), Float64(y),
-                                                Float64(vx), Float64(vy),
-                                                Float64(m_comb))
-
 function Base.:+(vec1::StateVector, vec2::StateVector)
     StateVector(vec1.x + vec2.x,
                 vec1.y + vec2.y,
