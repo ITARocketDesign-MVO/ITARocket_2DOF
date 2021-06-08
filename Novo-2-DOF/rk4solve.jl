@@ -14,7 +14,7 @@ function rk4solution((t0, tmax)::Tuple{Number, Number}, X0::StateVector,
                               #Padronizando 0.001 de step size
 
     t_range = t0:dt:tmax
-    all_Xs = Vector{StateVector}(undef, length(t_range) + 1)
+    all_Xs = Vector{Any}(undef, length(t_range) + 1)
     all_Xs[1] = X0
     j = 2
 
