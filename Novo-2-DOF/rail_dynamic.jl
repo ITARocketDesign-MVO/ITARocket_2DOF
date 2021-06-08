@@ -1,4 +1,4 @@
-function forces_rail(X::StateVector, t::Float64, env::Environment, rocket::Rocket)
+function forces_rail(X::StateVector, env::Environment, rocket::Rocket)
     M = X.m_comb + rocket.empty_mass #massa do foguete
     W = M * env.g #W de Weight, peso
     θ = env.rail.θ_ground
