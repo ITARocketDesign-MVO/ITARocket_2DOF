@@ -14,12 +14,12 @@ function rk4solution((t0, tmax)::Tuple{Number, Number}, X0::StateVector,
                               #Padronizando 0.001 de step size
 
     t_range = t0:dt:tmax
-    all_Xs = Array{StateVector, 1}()
-    push!(all_Xs, X0)
-    j = 1
+    all_Xs = Vector{StateVector}(undef, length(t_range) + 1)
+    all_Xs[1] = X0
+    j = 2
 
     for t in t_range
-        push!(all_Xs, rk4solver(t, all_Xs[j], dXdt, dt))
+        all_Xs[j] = rk4solver(t, all_Xs[j - 1], dXdt, dt)
         j += 1
     end
 
