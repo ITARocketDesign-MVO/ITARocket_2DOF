@@ -9,7 +9,7 @@ export forces_rail
 
 # Runge-Kutta
 # Se pa n precisa exportar o rk4solver
-export rk4solver, rk4solution
+export rk4solver, rk4solution, rk4flight
 
 include("base_def.jl")
 include("rail_dynamic.jl")
