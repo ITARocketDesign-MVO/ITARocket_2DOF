@@ -92,6 +92,10 @@ struct Rocket
     main::Parachute
     #chave para os dicionários de condição
     condition::String
+    #dicionário de funções de dinâmica
+    dynamics::Dict{String, Function}
+    #dicionário de testes de mudança de condição de voo
+    dynamic_end_conditions::Dict{String, Function}
 end
 
 "Representação da rampa de lançamento."

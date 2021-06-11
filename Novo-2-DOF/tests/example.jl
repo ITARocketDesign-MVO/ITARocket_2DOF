@@ -16,7 +16,11 @@ main = Parachute(aed_drogue, (x::StateVector) -> x.y < 1294+300)
 motor = Propulsion(2000, 4.5, 6.5)
 
 #mudar a forma de armazenamento da condição de voo
-rocket = Rocket(23.5, motor, Aed(0.4, 0.08), drogue, main, "Rail")
+dynas = Dict("example" => (X::StateVector, t, rocket::Rocket, env::Environment) -> (1,2))
+ends = Dict("example" => (X::StateVector, t, rocket::Rocket, env::Environment) -> X.y > 400)
+rocket = Rocket(23.5, motor, Aed(0.4, 0.08), drogue, main, "example", dynas, ends)
+rocket.dynamics[rocket.condition]
+
 
 rail = Rail(5, 85, 0.03)
 
