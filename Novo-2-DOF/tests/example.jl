@@ -23,3 +23,4 @@ rail = Rail(5, 85, 0.03)
 env = Environment(9.81, 1.225, rail, 1294)
 
 forces_rail(X₀, 0.0, env, rocket)
+
