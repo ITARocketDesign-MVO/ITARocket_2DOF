@@ -5,7 +5,7 @@ using .BaseDefinitions
 
 #criação de condições iniciais:
 
-X₀ = StateVector(0, 1294, 0, 0, 4.5)
+X₀ = StateVector(0, 1294, 0, 0)
 
 aed_drogue = Aed(1.5, 0.7)
 drogue = Parachute(aed_drogue, (x::StateVector) -> x.vy < 0)
