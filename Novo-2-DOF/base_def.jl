@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 module BaseDefinitions
 
 
@@ -7,7 +5,6 @@ module BaseDefinitions
 export StateVector, Aed, Parachute, Propulsion, Rocket, Rail, Environment
 
 "Representação do vetor de estados do foguete."
->>>>>>> base_defs_julia
 struct StateVector
     #distância horizontal a partir do local de lançamento
     x::Float64
