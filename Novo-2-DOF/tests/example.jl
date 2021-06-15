@@ -2,6 +2,7 @@
 
 #exemplo: teste de criação das structs-base
 include("../rail_dynamic.jl")
+include("../Thrust.jl")
 
 using .BaseDefinitions
 
@@ -23,3 +24,4 @@ rail = Rail(5, 85, 0.03)
 env = Environment(9.81, 1.225, rail, 1294)
 
 forces_rail(X₀, 0.0, env, rocket)
+currentThrust([1.0 1.0; 2 2; 3 3; 4 4; 5 5; 6 6], 3.5)
