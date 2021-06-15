@@ -1,9 +1,3 @@
-module BaseDefinitions
-
-
-#exportar menos coisas? (só StateVector, Rkt e Amb)
-export StateVector, Aed, Parachute, Propulsion, Rocket, Rail, Environment
-
 "Representação do vetor de estados do foguete."
 struct StateVector
     #distância horizontal a partir do local de lançamento
@@ -90,13 +84,16 @@ struct Rocket
     aed::Aed
     drogue::Parachute
     main::Parachute
-    #chave para os dicionários de condição
-    condition::String
     #dicionário de funções de dinâmica
     dynamics::Dict{String, Function}
     #dicionário de testes de mudança de condição de voo
     dynamic_end_conditions::Dict{String, Function}
 end
+
+Rocket(rocket::Rocket, new_condition::String) = Rocket(rocket.empty_mass,
+    rocket.propulsion, rocket.aed, rocket.drogue, rocket.main, new_condition,
+    rocket.condition_sequence, rocket.dynamics,
+    rocket.dynamic_end_conditions)
 
 "Representação da rampa de lançamento."
 struct Rail
