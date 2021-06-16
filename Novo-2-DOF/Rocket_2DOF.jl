@@ -9,6 +9,6 @@ export StateVector, Aed, Parachute, Propulsion, Rocket, Rail, Environment
 export rk4solver, solveStage, fullFlight
 
 include("base_def.jl")
-include("rk4solve.jl")
+include("rk4solve_global.jl")
 
 end # module

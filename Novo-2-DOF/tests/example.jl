@@ -24,7 +24,7 @@ dynas = Dict("inicio" => (t::Real, X::StateVector, rocket::Rocket,
              "meio1" => (t::Real, X::StateVector, rocket::Rocket,
                            env::Environment) -> StateVector(1, 1, 0, 0),
              "meio2" => (t::Real, X::StateVector, rocket::Rocket,
-                           env::Environment) -> StateVector(-1, -1, 0, 0))
+                           env::Environment) -> StateVector(1, -1, 0, 0))
 
 ends = Dict("inicio" => (t::Real, X::StateVector, rocket::Rocket,
                            env::Environment) -> true,
@@ -52,7 +52,4 @@ for key in keys(all_X)
     plot1 = scatter!([(X.x, X.y) for X in all_X[key]])
 end
 
-res1 = @benchmark solveStage(0, StateVector(0,0,0,0), "inicio", Dict{String, String}("inicio" => "meio", "meio" => "fim"), rocket, env, 0.001)
 res2 = @benchmark fullFlight(rocket, env, condition_sequence)
-
-@profile fullFlight(rocket, env, condition_sequence)

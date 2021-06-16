@@ -21,7 +21,7 @@ function solveStage(t::Real, X0::StateVector, condition::String,
 
     while !rocket.dynamic_end_conditions[condition](t, all_Xs[j - 1],
                                                            rocket, env)
-                                                           
+
         all_Xs[j] = rk4solver(t, all_Xs[j - 1], rocket, condition, env, dt)
 
         # Pra n ficar infinito, significa que alguma condicao eh incoerente
