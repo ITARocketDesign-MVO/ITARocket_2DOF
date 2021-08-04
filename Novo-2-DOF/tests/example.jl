@@ -1,7 +1,10 @@
 #tudo que precisar ser testado, fazer nessa pasta
-include("../base_def.jl")
 
 include("../input.jl")
+include("../rail_dynamic.jl")
+include("../Thrust.jl")
+
+using .BaseDefinitions
 using .Inputs
 #criação de condições iniciais:
 
@@ -20,3 +23,9 @@ X₀, rocket, env = manual_input(
     launch_altitude = 1294,
     rail_length = 5
 )
+
+
+forces_rail(X₀, 0.0, env, rocket)
+
+currentThrust([1.0 1.0; 2 2; 3 3; 4 4; 5 5; 6 6], 3.5)
+
