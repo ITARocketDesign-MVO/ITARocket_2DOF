@@ -1,5 +1,5 @@
 module Inputs
-
+#módulo para colocar os parâmetros do foguete
 using ..BaseDefinitions
 export manual_input
 
