@@ -1,9 +1,3 @@
-module BaseDefinitions
-
-
-#exportar menos coisas? (só StateVector, Rkt e Amb)
-export StateVector, Aed, Parachute, Propulsion, Rocket, Rail, Environment
-
 "Representação do vetor de estados do foguete."
 struct StateVector
     #distância horizontal a partir do local de lançamento
@@ -26,7 +20,7 @@ Serve principalmente para calcular o próximo vetor de estados:
 > X_{n+1} = X_{n} + dX
 """
 function Base.:+(vec1::StateVector, vec2::StateVector)
-    StateVector(vec1.x + vec2.x, 
+    StateVector(vec1.x + vec2.x,
                 vec1.y + vec2.y,
                 vec1.vx + vec2.vx,
                 vec1.vy + vec2.vy
@@ -90,13 +84,16 @@ struct Rocket
     aed::Aed
     drogue::Parachute
     main::Parachute
-    #chave para os dicionários de condição
-    condition::String
     #dicionário de funções de dinâmica
     dynamics::Dict{String, Function}
     #dicionário de testes de mudança de condição de voo
     dynamic_end_conditions::Dict{String, Function}
 end
+
+Rocket(rocket::Rocket, new_condition::String) = Rocket(rocket.empty_mass,
+    rocket.propulsion, rocket.aed, rocket.drogue, rocket.main, new_condition,
+    rocket.condition_sequence, rocket.dynamics,
+    rocket.dynamic_end_conditions)
 
 "Representação da rampa de lançamento."
 struct Rail
@@ -116,6 +113,4 @@ struct Environment
     rail::Rail
     #altitude de lançamento, acima do nível do mar
     launch_altittude::Real
-end
-
 end
