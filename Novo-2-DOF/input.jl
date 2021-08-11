@@ -23,19 +23,25 @@ function manual_input(;
     rail = Rail(rail_length, launch_angle, 0.03)
 
     #mudar para funções
-    env = Environment(9.81, 1.225, rail, launch_altitude)
+    env = Environment(9.81, 1.225, 340.0, rail, launch_altitude)
 
     #parametrizar condições de abertura
-    drogue = Parachute(Aed(drogue_cd, drogue_area),
-                    (x::StateVector) -> x.vy < 0)
-    main = Parachute(Aed(main_cd, main_area),
-                    (x::StateVector) -> x.y <= launch_altitude+300)
+    drogue = Aed(drogue_cd, drogue_area)
+    main = Aed(main_cd, main_area)
 
     motor = Propulsion(thrust, propellant_mass, burn_time)
 
+    #fases de voo
+    #incluir módulo das dinâmicas aqui
+    rail_phase = FlightPhase("rail", forces_rail, rail_end)
+    thrusted_phase = FlightPhase("thrusted", forces_thrusted, thrusted_end)
+    ballistic_phase = FlightPhase("ballistic", forces_ballistic, ballistic_end)
+    drogue_phase = FlightPhase("drogue", forces_drogue, drogue_end)
+    main_phase = FlightPhase("main", forces_main, main_end)
+
+    phases = [rail_phase, thrusted_phase, ballistic_phase, drogue_phase, main_phase]
     rocket = Rocket(empty_mass, motor, Aed(rocket_cd, rocket_area),
-                     drogue, main,
-                     "MUDAR DEPOIS", Dict(), Dict())
+                     drogue, main, phases)
     
     return X₀, rocket, env
 end
