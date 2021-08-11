@@ -35,8 +35,9 @@ function solveStage(t::Real, X0::StateVector, condition::Int,
         t += dt
     end
 
-
-    return all_Xs[1:j - 1], t - dt
+    #t+dt!!!!! 
+    #return all_Xs[1:j - 1], t - dt
+    return all_Xs[1:j - 1], t + dt
 end
 
 function fullFlight(rocket::Rocket, env::Environment,
@@ -51,7 +52,7 @@ function fullFlight(rocket::Rocket, env::Environment,
     while true
         all_Xs, t = solveStage(t, transition_state, condition,
                                                 rocket, env, dt)
-        fullFlight[rocket[condition].name] = all_Xs #armazena o t aqui também plz!
+        fullFlight[rocket.flight_phases[condition].name] = all_Xs #armazena o t aqui também plz!
         transition_state = all_Xs[end]
 
         if condition == length(rocket.flight_phases)
@@ -59,5 +60,6 @@ function fullFlight(rocket::Rocket, env::Environment,
             fullFlight[rocket.flight_phases[condition].name][1] = all_Xs[end]
             return fullFlight
         end
+        condition += 1
     end
 end

@@ -31,6 +31,19 @@ function manual_input(;
 
     motor = Propulsion(thrust, propellant_mass, burn_time)
 
+    #temporario
+
+    forces_rail = forces_thrusted = forces_ballistic =
+        forces_drogue = forces_main =
+            (x::StateVector, t::Float64, env::Environment, rocket::Rocket) ->
+            [
+                0
+                0
+            ]
+
+    rail_end = thrusted_end = ballistic_end = drogue_end = main_end = 
+            (t::Float64, X::StateVector, rocket::Rocket, env::Environment) -> true
+
     #fases de voo
     #incluir módulo das dinâmicas aqui
     rail_phase = FlightPhase("rail", forces_rail, rail_end)
