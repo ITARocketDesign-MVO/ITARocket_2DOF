@@ -1,22 +1,31 @@
-include("../Rocket_2DOF.jl")
 
-using .Rocket_2DOF
-using BenchmarkTools
-using Profile
-using Plots
-gr()
+#tudo que precisar ser testado, fazer nessa pasta
 
+include("../input.jl")
+include("../rail_dynamic.jl")
+include("../Thrust.jl")
+
+
+using .BaseDefinitions
+using .Inputs
 #criação de condições iniciais:
 
-X₀ = StateVector(0, 1294, 0, 0)
+X₀, rocket, env = manual_input(
+    empty_mass = 23.5,
+    rocket_cd = 0.4,
+    rocket_area = 0.08,
+    thrust = 2000,
+    propellant_mass = 4.5,
+    burn_time = 6.74,
+    drogue_cd = 1.5,
+    drogue_area = 0.7,
+    main_cd = 1.5,
+    main_area = 4,
+    launch_angle = 85,
+    launch_altitude = 1294,
+    rail_length = 5
+)
 
-aed_drogue = Aed(1.5, 0.7)
-drogue = Parachute(aed_drogue, (x::StateVector) -> x.vy < 0)
-
-aed_main = Aed(1.5, 4)
-main = Parachute(aed_drogue, (x::StateVector) -> x.y < 1294+300)
-
-motor = Propulsion(2000, 4.5, 6.5)
 
 #mudar a forma de armazenamento da condição de voo
 dynas = Dict("inicio" => (t::Real, X::StateVector, rocket::Rocket,
@@ -35,7 +44,9 @@ ends = Dict("inicio" => (t::Real, X::StateVector, rocket::Rocket,
 
 rocket = Rocket(23.5, motor, Aed(0.4, 0.08), drogue, main, dynas, ends)
 
-rail = Rail(5, 85, 0.03)
+
+currentThrust([1.0 1.0; 2 2; 3 3; 4 4; 5 5; 6 6], 3.5)
+
 
 env = Environment(9.81, 1.225, rail, 1294)
 
@@ -46,10 +57,5 @@ condition_sequence = Dict{String, String}("inicio" => "meio1",
 
 all_X = fullFlight(rocket, env, condition_sequence)
 
-plot1 = plot()
-for key in keys(all_X)
-    global plot1
-    plot1 = scatter!([(X.x, X.y) for X in all_X[key]])
-end
 
-res2 = @benchmark fullFlight(rocket, env, condition_sequence)
+
