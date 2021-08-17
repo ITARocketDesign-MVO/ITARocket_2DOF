@@ -2,8 +2,8 @@ include("base_def.jl")
 
 using .BaseDefinitions
 
-function forces_main(X::StateVector, t::Float64, env::Enviroment, rocket::Rocket)
-    
+function forces_main(t::Float64, X::StateVectort, rocket::Rocket, env::Enviromen)
+
     M = X.m_comb + rocket.empty_mass
     W = M * env.g
     cosθ = X.vx/sqrt(X.vx^2 + X.vy^2)
@@ -14,5 +14,5 @@ function forces_main(X::StateVector, t::Float64, env::Enviroment, rocket::Rocket
     Fx = -cosθ * Drag
     Fy = -sinθ * Drag - W
 
-    return Fx, Fy 
+    return Fx, Fy
 end
