@@ -19,7 +19,7 @@ function manual_input(;
     rail_length::Real
 )
     X₀ = StateVector(0, launch_altitude, 0, 0)
-    
+
     rail = Rail(rail_length, launch_angle, 0.03)
 
     #mudar para funções
@@ -35,13 +35,13 @@ function manual_input(;
 
     forces_rail = forces_thrusted = forces_ballistic =
         forces_drogue = forces_main =
-            (x::StateVector, t::Float64, env::Environment, rocket::Rocket) ->
+            (t::Float64, x::StateVector, rocket::Rocket, env::Environment) ->
             [
                 0
                 0
             ]
 
-    rail_end = thrusted_end = ballistic_end = drogue_end = main_end = 
+    rail_end = thrusted_end = ballistic_end = drogue_end = main_end =
             (t::Float64, X::StateVector, rocket::Rocket, env::Environment) -> true
 
     #fases de voo
@@ -55,7 +55,7 @@ function manual_input(;
     phases = [rail_phase, thrusted_phase, ballistic_phase, drogue_phase, main_phase]
     rocket = Rocket(empty_mass, motor, Aed(rocket_cd, rocket_area),
                      drogue, main, phases)
-    
+
     return X₀, rocket, env
 end
 
