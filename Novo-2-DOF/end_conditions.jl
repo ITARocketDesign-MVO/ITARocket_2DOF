@@ -1,31 +1,73 @@
-include("base_def.jl")
 module EndConditions
-    using ..BaseDefinitions
+using ..BaseDefinitions
+
+export rail_end, thrusted_end, ballistic_end, drogue_end, main_end
 
 """
     rail_end(X::StateVector, rocket::Rocket, env::Environment, t::Float64)
 
-Verifica se a fase da rampa terminou. Se
+Verifica se a fase da rampa terminou. 
+
+Se
 
 `` √(Δx² + Δy²) ≥ L_trilho ``,
 
-o foguete se afastou o suficiente da rampa.
+o foguete está suficientemente longe da origem. Com o fim dessa fase, começa o voo
+propulsionado pelo motor.
 """
-function rail_end(X::StateVector, rocket::Rocket, env::Environment, t::Float64)
+function rail_end(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
     return √(X.x^2+(X.y-env.launch_altittude)^2) >= env.rail.length
 end
 
-function thrusted_end(X::StateVector, rocket::Rocket, env::Environment, t::Float64)
+"""
+    thrusted_end(X::StateVector, rocket::Rocket, env::Environment, t::Float64)
+
+Verifica se a fase de queima do motor terminou.
+
+Se ``t_simulação ≥ tempo_queima, encerra a queima do motor. Depois dessa fase, o foguete
+executa o voo livre.
+
+> **Obs**: se a tabela de empuxo tiver dados além do tempo_queima, eles são ignorados.
+"""
+function thrusted_end(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
     return t >= rocket.propulsion.burn_time
 end
-function ballistic_end(X::StateVector, rocket::Rocket, env::Environment, t::Float64)
+
+"""
+    ballistic_end(X::StateVector, rocket::Rocket, env::Environment, t::Float64)
+
+Verifica se a fase de voo livre terminou.
+
+O voo livre termina no apogeu, isto é, o primeiro instante no qual ``vᵧ ≤ 0``.
+O drogue é acionado no fim do voo livre.
+"""
+function ballistic_end(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
     return X.vy <= 0 
 end
-function drogue_end(X::StateVector, rocket::Rocket, env::Environment, t::Float64)
+
+"""
+    drogue_end(X::StateVector, rocket::Rocket, env::Environment, t::Float64)
+
+Verifica se a fase de voo com o drogue aberto terminou.
+
+Ao atingir uma certa altura do solo, o drogue deve ser cortado para que o *main*
+possa ser aberto. Isso ocorre a ``h ≤ 300 m ``. Essa altura é input da REC. 
+
+> Nota para o futuro: verificar se existe a possibilidade dessa altura mudar.
+"""
+function drogue_end(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
     #parametrizar o 300? input de REC
     return X.y <= env.launch_altittude + 300
 end
-function main_end(X::StateVector, rocket::Rocket, env::Environment, t::Float64)
-    return X.y <= 0
+
+"""
+    main_end(X::StateVector, rocket::Rocket, env::Environment, t::Float64)
+
+Verifica se voo terminou.
+
+O foguete cai sob efeito do paraquedas *main* até que atinja o solo (y ≤ 0).
+"""
+function main_end(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
+    return X.y <= env.launch_altittude
 end
 end

@@ -3,6 +3,9 @@ module Inputs
 using ..BaseDefinitions
 export manual_input
 
+include("end_conditions.jl")
+using .EndConditions
+
 function manual_input(;
     empty_mass::Real,
     rocket_cd::Real,
@@ -40,9 +43,6 @@ function manual_input(;
                 0
                 0
             ]
-
-    rail_end = thrusted_end = ballistic_end = drogue_end = main_end = 
-            (t::Float64, X::StateVector, rocket::Rocket, env::Environment) -> true
 
     #fases de voo
     #incluir módulo das dinâmicas aqui
