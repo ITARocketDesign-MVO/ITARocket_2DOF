@@ -38,7 +38,7 @@ function manual_input(;
 
     forces_rail = forces_thrusted = forces_ballistic =
         forces_drogue = forces_main =
-            (x::StateVector, t::Float64, env::Environment, rocket::Rocket) ->
+            (t::Float64, x::StateVector, rocket::Rocket,  env::Environment) ->
             [
                 0
                 0
