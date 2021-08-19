@@ -36,7 +36,7 @@ function solveStage(t::Real, X0::StateVector, phase::Int,
 
     while !rocket.flight_phases[phase].end_condition(t, all_Xs[j - 1],
                                                            rocket, env)
-
+        #usar um push!? para voos longos é importante
         all_Xs[j] = rk4solver(t, all_Xs[j - 1], rocket, phase, env, dt)
 
         # Pra n ficar infinito, significa que alguma condicao eh incoerente

@@ -26,6 +26,7 @@ X₀, rocket, env = manual_input(
 
 
 # Voo
+#as dinâmicas do foguete estão vazias. Portanto, o voo nunca termina
 all_X = fullFlight(rocket, env, X₀)
 
 
