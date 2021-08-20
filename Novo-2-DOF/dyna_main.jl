@@ -1,8 +1,4 @@
-include("base_def.jl")
-
-using .BaseDefinitions
-
-function forces_main(t::Float64, X::StateVectort, rocket::Rocket, env::Enviromen)
+function forces_main(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
 
     M = X.m_comb + rocket.empty_mass
     W = M * env.g
