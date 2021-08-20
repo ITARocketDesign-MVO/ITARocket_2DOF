@@ -3,6 +3,9 @@ module Inputs
 using ..BaseDefinitions
 export manual_input
 
+include("dynamics.jl")
+using .Dynamics
+
 function manual_input(;
     empty_mass::Real,
     rocket_cd::Real,
@@ -30,16 +33,6 @@ function manual_input(;
     main = Aed(main_cd, main_area)
 
     motor = Propulsion(thrust, propellant_mass, burn_time)
-
-    #temporario
-
-    forces_rail = forces_thrusted = forces_ballistic =
-        forces_drogue = forces_main =
-            (t::Float64, x::StateVector, rocket::Rocket, env::Environment) ->
-            [
-                0
-                0
-            ]
 
     rail_end = thrusted_end = ballistic_end = drogue_end = main_end =
             (t::Float64, X::StateVector, rocket::Rocket, env::Environment) -> true
