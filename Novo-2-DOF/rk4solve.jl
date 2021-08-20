@@ -1,3 +1,6 @@
+module Solver
+using ..BaseDefinitions
+export fullFlight
 #Coca, só atualizei umas coisas envolvendo o dicionário de condições de voo, checa lá na base_def
 #acho que tá bem mais claro o que é cada coisa agora ♡
 
@@ -61,4 +64,6 @@ function fullFlight(X0::StateVector, rocket::Rocket,
         end
         condition += 1
     end
+end
+
 end
