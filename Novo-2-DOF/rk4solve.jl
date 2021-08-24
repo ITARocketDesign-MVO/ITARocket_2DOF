@@ -73,7 +73,7 @@ function fullFlight(rocket::Rocket, env::Environment,
                     X0::StateVector, dt::Float64=0.001)
 
     phase = 1
-    fullFlight = Dict{Any, Any}()
+    full_Flight = Dict{Any, Any}()
     transition_state = X0
     t = 0.0
 
@@ -81,16 +81,16 @@ function fullFlight(rocket::Rocket, env::Environment,
 
         # Armazena a trajetoria e momento final de uma fase do voo
         all_Xs, t = solveStage(t, transition_state, rocket, env, phase, dt)
-        fullFlight[rocket.flight_phases[condition].name] = (all_Xs, t)
+        full_Flight[rocket.flight_phases[phase].name] = (all_Xs, t)
 
         # Condicao inicial da proxima fase do voo
         transition_state = all_Xs[end]
 
         # Vetor de fases percorrido, finalizacao
         if phase == length(rocket.flight_phases)
-            fullFlight["end"] = Vector{Any}(undef, 1)
-            fullFlight["end"][1] = all_Xs[end]
-            return fullFlight
+            full_Flight["end"] = Vector{Any}(undef, 1)
+            full_Flight["end"][1] = all_Xs[end]
+            return full_Flight
         end
 
         # Proxima fase do voo
