@@ -1,7 +1,3 @@
-include("base_def.jl")
-
-using .BaseDefinitions
-
 function forces_rail(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
     M = X.m_comb + rocket.empty_mass #massa do foguete
     W = M * env.g #W de Weight, peso

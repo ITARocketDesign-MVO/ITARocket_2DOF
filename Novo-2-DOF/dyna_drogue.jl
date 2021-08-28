@@ -1,8 +1,4 @@
-include("base_def.jl")
-
-using .BaseDefinitions
-
-function forces_drogue(t::Float64, X::StateVector, rocket::Rocket, env::Enviroment)
+function forces_drogue(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
 
     M = X.m_comb + rocket.empty_mass
     W = M * env.g
