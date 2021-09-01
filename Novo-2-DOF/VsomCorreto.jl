@@ -1,3 +1,10 @@
+"""
+    Vsom(k::Float64)
+
+Calcula a velocidade do som a uma altitude k acima do nível do mar.
+
+Reta ajustada a partir dos dados em https://www.engineeringtoolbox.com/elevation-speed-sound-air-d_1534.html
+"""
 function Vsom(k::Float64)
     return 340.6147266777097 - 0.004065762999474718*k
 end 
