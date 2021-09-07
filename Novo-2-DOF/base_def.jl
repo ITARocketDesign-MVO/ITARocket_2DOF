@@ -100,11 +100,11 @@ end
 "Representação do ambiente de voo do foguete."
 struct Environment
     #módulo da gravidade
-    g::Union{Float64, Function}
+    g::Function
     #densidade do ar
-    ρ::Union{Float64, Function}
+    ρ::Function
     #velocidade do som (para calcular o número de Mach)
-    v_sound::Union{Float64, Function}
+    v_sound::Function
     rail::Rail
     #altitude de lançamento, acima do nível do mar
     launch_altittude::Real
