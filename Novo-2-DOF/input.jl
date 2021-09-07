@@ -21,7 +21,7 @@ function manual_input(;
     launch_altitude::Real,
     rail_length::Real
 )
-    X₀ = StateVector(0, launch_altitude, 0, 0)
+    X₀ = StateVector(0, 0, 0, 0)
     
     rail = Rail(rail_length, launch_angle, 0.03)
 

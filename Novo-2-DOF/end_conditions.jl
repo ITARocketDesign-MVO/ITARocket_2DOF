@@ -16,7 +16,7 @@ o foguete está suficientemente longe da origem. Com o fim dessa fase, começa o
 propulsionado pelo motor.
 """
 function rail_end(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
-    return √(X.x^2+(X.y-env.launch_altittude)^2) >= env.rail.length
+    return √(X.x^2+(X.y)^2) >= env.rail.length
 end
 
 """
@@ -57,7 +57,7 @@ possa ser aberto. Isso ocorre a ``h ≤ 300 m ``. Essa altura é input da REC.
 """
 function drogue_end(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
     #parametrizar o 300? input de REC
-    return X.y <= env.launch_altittude + 300
+    return X.y <= 300
 end
 
 """
@@ -68,6 +68,6 @@ Verifica se voo terminou.
 O foguete cai sob efeito do paraquedas *main* até que atinja o solo (y ≤ 0).
 """
 function main_end(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
-    return X.y <= env.launch_altittude
+    return X.y <= 0
 end
 end
