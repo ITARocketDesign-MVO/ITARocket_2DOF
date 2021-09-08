@@ -6,7 +6,7 @@ export StateVector, Aed, Propulsion, FlightPhase, Rocket, Rail, Environment
 struct StateVector
     #distância horizontal a partir do local de lançamento
     x::Float64
-    #altitude do foguete, orientada p cima, a partir do nível do mar
+    #altitude do foguete, orientada p cima, a partir da plataforma de lançamento
     y::Float64
     #velocidade em x
     vx::Float64
