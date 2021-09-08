@@ -1,9 +1,5 @@
-include("base_def.jl")
+function forces_drogue(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
 
-using .BaseDefinitions
-
-function forces_drogue(X::StateVector, t::Float64, env::Enviroment, rocket::Rocket)
-    
     M = X.m_comb + rocket.empty_mass
     W = M * env.g
     cosθ = X.vx/sqrt(X.vx^2 + X.vy^2)
@@ -14,5 +10,5 @@ function forces_drogue(X::StateVector, t::Float64, env::Enviroment, rocket::Rock
     Fx = -cosθ * Drag
     Fy = -sinθ * Drag - W
 
-    return Fx, Fy 
+    return Fx, Fy
 end

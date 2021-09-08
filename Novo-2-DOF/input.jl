@@ -6,6 +6,9 @@ export manual_input
 include("end_conditions.jl")
 using .EndConditions
 
+include("dynamics.jl")
+using .Dynamics
+
 function manual_input(;
     empty_mass::Real,
     rocket_cd::Real,
@@ -55,7 +58,7 @@ function manual_input(;
     phases = [rail_phase, thrusted_phase, ballistic_phase, drogue_phase, main_phase]
     rocket = Rocket(empty_mass, motor, Aed(rocket_cd, rocket_area),
                      drogue, main, phases)
-    
+
     return X₀, rocket, env
 end
 
