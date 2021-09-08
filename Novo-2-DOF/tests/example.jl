@@ -1,11 +1,7 @@
 
 #tudo que precisar ser testado, fazer nessa pasta
-include("../base_def.jl")
-include("../input.jl")
-using .BaseDefinitions
-include("../rk4solve.jl")
-
-using .Inputs
+include("../Rocket_2DOF.jl")
+using .Rocket_2DOF
 #criação de condições iniciais:
 
 X₀, rocket, env = manual_input(
@@ -26,7 +22,7 @@ X₀, rocket, env = manual_input(
 
 
 # Voo
-all_X = fullFlight(rocket, env, X₀)
+all_X = fullFlight(X₀, rocket, env)
 
 
 

@@ -1,4 +1,6 @@
-include("base_def.jl")
+module Solver
+using ..BaseDefinitions
+export fullFlight
 
 """
     rk4solver(t::Real, X::StateVector, rocket::Rocket,
@@ -24,7 +26,6 @@ function rk4solver(t::Real, X::StateVector, rocket::Rocket,
 
 end
 
-
 """
     solveStage(t::Real, X0::StateVector, rocket::Rocket,
                env::Environment, phase::Int, dt::Float64)
@@ -45,7 +46,7 @@ function solveStage(t::Real, X0::StateVector, rocket::Rocket,
                                                            rocket, env)
 
         # Realização do passo com o solver rk4
-        all_Xs[j] = rk4solver(t, all_Xs[j - 1], rocket, condition, env, dt)
+        all_Xs[j] = rk4solver(t, all_Xs[j - 1], rocket, env, phase, dt)
 
         # Pra n ficar infinito, significa que alguma condicao eh incoerente
         if all_Xs[j].y == Inf
@@ -63,14 +64,14 @@ end
 
 
 """
-    fullFlight(rocket::Rocket, env::Environment,
-               X0::StateVector, dt::Float64=0.001)
+    fullFlight(X0::StateVector, rocket::Rocket,
+               env::Environment, dt::Float64=0.001)
 
 Descreve a trajetória do foguete durante todo o voo, passando por todas
 as fases definidas em _rocket.flightphases_
 """
-function fullFlight(rocket::Rocket, env::Environment,
-                    X0::StateVector, dt::Float64=0.001)
+function fullFlight(X0::StateVector, rocket::Rocket,
+                    env::Environment, dt::Float64=0.001)
 
     phase = 1
     full_Flight = Dict{Any, Any}()
@@ -96,4 +97,6 @@ function fullFlight(rocket::Rocket, env::Environment,
         # Proxima fase do voo
         phase += 1
     end
+end
+
 end
