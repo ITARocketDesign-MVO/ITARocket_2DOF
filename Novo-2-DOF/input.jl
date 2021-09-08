@@ -25,11 +25,11 @@ function manual_input(;
     rail_length::Real
 )
     X₀ = StateVector(0, 0, 0, 0)
-    
+
     rail = Rail(rail_length, launch_angle, 0.03)
 
     #mudar para funções
-    env = Environment(9.81, 1.225, 340.0, rail, launch_altitude)
+    env = Environment(x -> 9.81, x-> 1.225, x -> 340.0, rail, launch_altitude)
 
     #parametrizar condições de abertura
     drogue = Aed(drogue_cd, drogue_area)
@@ -49,11 +49,11 @@ function manual_input(;
 
     #fases de voo
     #incluir módulo das dinâmicas aqui
-    rail_phase = FlightPhase("rail", forces_rail, rail_end)
-    thrusted_phase = FlightPhase("thrusted", forces_thrusted, thrusted_end)
-    ballistic_phase = FlightPhase("ballistic", forces_ballistic, ballistic_end)
-    drogue_phase = FlightPhase("drogue", forces_drogue, drogue_end)
-    main_phase = FlightPhase("main", forces_main, main_end)
+    rail_phase = FlightPhase("rail", acc_rail, rail_end)
+    thrusted_phase = FlightPhase("thrusted", acc_thrusted, thrusted_end)
+    ballistic_phase = FlightPhase("ballistic", acc_ballistic, ballistic_end)
+    drogue_phase = FlightPhase("drogue", acc_drogue, drogue_end)
+    main_phase = FlightPhase("main", acc_main, main_end)
 
     phases = [rail_phase, thrusted_phase, ballistic_phase, drogue_phase, main_phase]
     rocket = Rocket(empty_mass, motor, Aed(rocket_cd, rocket_area),
