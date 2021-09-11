@@ -7,7 +7,7 @@ function currentCd(X::StateVector, rocket::Rocket, env::Environment)
     return currentCd(X, rocket.aed.Cd, env)
 end
 
-function currentCd(X::StateVector, Cd::Float64, env::Environment)
+function currentCd(X::StateVector, Cd::Real, env::Environment)
     return Cd
 end
 
@@ -33,7 +33,7 @@ function currentThrust(t::Float64, rocket::Rocket)
     return currentThrust(t, rocket.propulsion.thrust)
 end
 
-function currentThrust(t::Float64, thrust::Float64)
+function currentThrust(t::Float64, thrust::Real)
     return thrust
 end
 

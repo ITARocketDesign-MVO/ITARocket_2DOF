@@ -2,6 +2,11 @@ module Solver
 using ..BaseDefinitions
 export fullFlight
 
+function Xdot(t::Real, X::StateVector, rocket::Rocket, env::Environment, phase::Int)
+    acc = rocket.flight_phases[phase].dynamic(t, X, rocket, env)
+    return StateVector(X.vx, X.vy, acc[1], acc[2])
+end
+
 """
     rk4solver(t::Real, X::StateVector, rocket::Rocket,
               env::Environment, phase::Int, dt::Float64)
@@ -17,10 +22,10 @@ ele encontra (_env_)
 function rk4solver(t::Real, X::StateVector, rocket::Rocket,
                    env::Environment, phase::Int, dt::Float64)
 
-    k1 = rocket.flight_phases[phase].dynamic(     t    ,         X       , rocket, env)
-    k2 = rocket.flight_phases[phase].dynamic(t + dt / 2, X + (dt / 2) *k1, rocket, env)
-    k3 = rocket.flight_phases[phase].dynamic(t + dt / 2, X + (dt / 2) *k2, rocket, env)
-    k4 = rocket.flight_phases[phase].dynamic(  t + dt  ,      X + k3     , rocket, env)
+    k1 = Xdot(     t    ,         X       , rocket, env, phase)
+    k2 = Xdot(t + dt / 2, X + (dt / 2) *k1, rocket, env, phase)
+    k3 = Xdot(t + dt / 2, X + (dt / 2) *k2, rocket, env, phase)
+    k4 = Xdot(  t + dt  ,      X + k3     , rocket, env, phase)
 
     return X + (dt / 6) * (k1 + 2 * k2 + 2 * k3 + k4)
 
