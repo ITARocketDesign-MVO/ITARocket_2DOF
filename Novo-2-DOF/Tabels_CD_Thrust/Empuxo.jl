@@ -13,4 +13,4 @@ function Leithrust(arquivo::String)
     return thrust;
 end
 
-Leithrust("./Novo-2-DOF/Tabels_CD_Thrust/Empuxo_completo.dat")
+Leithrust("./Montenegro-1/Empuxo_completo.dat")
