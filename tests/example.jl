@@ -4,6 +4,8 @@ include("../src/Rocket_2DOF.jl")
 using .Rocket_2DOF
 #criação de condições iniciais:
 
+Leithrust("Montenegro-1")
+
 X₀, rocket, env = manual_input(
     empty_mass = 23.5,
     rocket_cd = 0.4,
