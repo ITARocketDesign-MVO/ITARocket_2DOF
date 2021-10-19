@@ -1,8 +1,12 @@
+module BaseDefinitions
+
+export StateVector, Aed, Propulsion, FlightPhase, Rocket, Rail, Environment
+
 "Representação do vetor de estados do foguete."
 struct StateVector
     #distância horizontal a partir do local de lançamento
     x::Float64
-    #altitude do foguete, orientada p cima, a partir do nível do mar
+    #altitude do foguete, orientada p cima, a partir da plataforma de lançamento
     y::Float64
     #velocidade em x
     vx::Float64
@@ -49,31 +53,28 @@ struct Aed
     #colocar array - 2a coluna pra valores correspondentes
     #de velocidade
     #coeficiente de arrasto - constante ou matriz n x 2 contendo
-    #pontos de (Cd, velocidade)
-    Cd::Union{Real, Vector{Real}}
+    #pontos de (Cd, N_mach)
+    Cd::Union{Real, Matrix{Real}}
     #area da seção transversal do objeto
     area::Float64
-end
-
-"""
-Representação de um paraquedas.
-Consiste em uma condição de ativação e uma struct de aerodinâmica Aed.
-"""
-struct Parachute
-    aed::Aed
-    #função que retorna valor booleano (ativar paraquedas? sim/não)
-    activate_condition::Function
 end
 
 "Representação do motor do foguete."
 struct Propulsion
     #constante ou matriz n x 2, com (empuxo, tempo)
-    thrust::Union{Real, Array{Real}}
+    thrust::Union{Real, Matrix{Real}}
     #massa total de propelente
     prop_mass::Real
     #tempo de queima do motor (caso empuxo constante)
     #ou trunca a tabela de empuxo (implementar)
     burn_time::Real
+end
+
+"Representação de uma fase de voo do foguete. Contém a dinâmica da fase e a condição para avançar para a próxima fase."
+struct FlightPhase
+    name::String
+    dynamic::Function
+    end_condition::Function
 end
 
 "Estrutura do foguete. Contém todas as informações pertinentes ao voo, exceto as características do ambiente."
@@ -82,18 +83,10 @@ struct Rocket
     empty_mass::Real
     propulsion::Propulsion
     aed::Aed
-    drogue::Parachute
-    main::Parachute
-    #dicionário de funções de dinâmica
-    dynamics::Dict{String, Function}
-    #dicionário de testes de mudança de condição de voo
-    dynamic_end_conditions::Dict{String, Function}
+    drogue::Aed
+    main::Aed
+    flight_phases::Vector{FlightPhase}
 end
-
-Rocket(rocket::Rocket, new_condition::String) = Rocket(rocket.empty_mass,
-    rocket.propulsion, rocket.aed, rocket.drogue, rocket.main, new_condition,
-    rocket.condition_sequence, rocket.dynamics,
-    rocket.dynamic_end_conditions)
 
 "Representação da rampa de lançamento."
 struct Rail
@@ -107,10 +100,14 @@ end
 "Representação do ambiente de voo do foguete."
 struct Environment
     #módulo da gravidade
-    g::Union{Float64, Function}
+    g::Function
     #densidade do ar
-    ρ::Union{Float64, Function}
+    ρ::Function
+    #velocidade do som (para calcular o número de Mach)
+    v_sound::Function
     rail::Rail
     #altitude de lançamento, acima do nível do mar
     launch_altittude::Real
+end
+
 end
