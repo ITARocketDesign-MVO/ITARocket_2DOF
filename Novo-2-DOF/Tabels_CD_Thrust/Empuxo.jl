@@ -12,3 +12,5 @@ function Leithrust(arquivo::String)
     thrust = hcat(tempo, Empuxo)  #concatena duas matrizes no  sentido das colunas 
     return thrust;
 end
+
+Leithrust("./Novo-2-DOF/Tabels_CD_Thrust/Empuxo_completo.dat")
