@@ -1,7 +1,7 @@
 module Inputs
 #módulo para colocar os parâmetros do foguete
 using ..BaseDefinitions
-export manual_input
+export manual_input, Leitcd, Leithrust
 
 include("end_conditions.jl")
 using .EndConditions
@@ -62,5 +62,34 @@ function manual_input(;
     return X₀, rocket, env
 end
 
+function Leitcd(projeto::String)
+    vel = [];   #vetor nulo
+    cd = [];    #vetor nulo
+    caminho = string("./", projeto, "/CDvMach.dat")
+    x = open(caminho,"r") do x2
+        for i in eachline(x2) 
+            numeros = rsplit(i, "   ")                  #Separa a string em um vetor de string (obs.: separa a string de acordo com "   ")
+            push!(vel, parse(Float64, numeros[2]));     #Push insere um elemento na próxima linha de uma matriz com uma coluna, push!(matriz, elemento)
+            push!(cd, parse(Float64, numeros[3]));      #o elemento é o parse(...), parse serve pra transformar: parse(o formato que tu quer, o que você quer transformar)
+       end                                             #no caso transforma string para float
+    end
+    Cd = hcat(vel, cd);  #concatena duas matrizes no  sentido das colunas 
+    return Cd;
+end
+
+function Leithrust(projeto::String)
+    tempo = []    #vetor nulo
+    Empuxo = []    #vetor nulo
+    caminho = string("./", projeto, "/Empuxo_completo.dat")
+    x = open(caminho,"r") do x
+        for i in eachline(x) 
+            numeros = rsplit(i, "\t")                   #Separa a string em um vetor de string (obs.: separa a string de acordo com "\t")
+            push!(tempo, parse(Float64, numeros[1]));   #Push insere um elemento na próxima linha de uma matriz com uma coluna, push!(matriz, elemento)
+            push!(Empuxo, parse(Float64, numeros[2]));  #o elemento é o parse(...), parse serve pra transformar: parse(o formato que tu quer, o que você quer transformar)
+        end                                             #no caso transforma string para float
+    end
+    thrust = hcat(tempo, Empuxo)  #concatena duas matrizes no  sentido das colunas 
+    return thrust;
+end
 
 end

@@ -4,5 +4,5 @@ include("input.jl")
 include("rk4solve.jl")
 using .Inputs, .Solver
 
-export manual_input, fullFlight
+export manual_input, Leitcd, Leithrust, fullFlight
 end
