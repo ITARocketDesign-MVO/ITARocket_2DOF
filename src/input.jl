@@ -9,6 +9,8 @@ using .EndConditions
 include("dynamics.jl")
 using .Dynamics
 
+include("ambient_conditions.jl")
+
 function manual_input(;
     empty_mass::Real,
     rocket_cd::Real,
@@ -29,7 +31,7 @@ function manual_input(;
     rail = Rail(rail_length, launch_angle, 0.03)
 
     #mudar para funções
-    env = Environment(x -> 9.81, x-> 1.225, x -> 340.0, rail, launch_altitude)
+    env = Environment(AmbientConditions.g, AmbientConditions.rho, AmbientConditions.Vsom, rail, launch_altitude)
 
     #parametrizar condições de abertura
     drogue = Aed(drogue_cd, drogue_area)
@@ -91,5 +93,6 @@ function Leithrust(projeto::String)
     thrust = hcat(tempo, Empuxo)  #concatena duas matrizes no  sentido das colunas 
     return thrust;
 end
+
 
 end
