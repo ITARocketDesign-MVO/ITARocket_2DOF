@@ -83,73 +83,118 @@ function read_thrust(projeto::String)
     return thrust;
 end
 
+module InParameters
+
+    struct InputConverter
+        name::String
+        converter::Function
+    end
+
+    mutable struct InputParameter
+        value::Float64
+        converters::Vector{InputConverter}
+        function InputParameter(converters::Vector{InputConverter})
+            new(-1, converters)
+        end
+    end
+
+    function (param::InputParameter)(name::String, value::Float64)
+        if name in [converter.name for converter in param.converters]
+            for converter in param.converters
+                if converter.name == name
+                    param.value = converter.converter(value)
+                    return true
+                end
+            end
+        end
+        return false
+    end
+
+    empty_mass_c      = InputConverter("Massa vazia", x -> x)
+    rocket_cd_c       = InputConverter("Cd do foguete", x -> x)
+    rocket_area_c     = InputConverter("Area transversal do foguete", x -> x)
+    rocket_diam_c     = InputConverter("Diametro do foguete", x -> π/4*x^2)
+    rocket_radius_c   = InputConverter("Raio do foguete"    , x -> π*x^2)
+    thrust_c          = InputConverter("Empuxo", x -> x)
+    propellant_mass_c = InputConverter("Massa de propelente", x -> x)
+    burn_time_c       = InputConverter("Tempo de queima", x -> x)
+    drogue_cd_c       = InputConverter("Cd do drogue", x -> x)
+    drogue_area_c     = InputConverter("Area do drogue", x -> x)
+    main_cd_c         = InputConverter("Cd do main", x -> x)
+    main_area_c       = InputConverter("Area do main", x -> x)
+    launch_angle_c    = InputConverter("Angulo de lancamento", x -> x)
+    launch_altitude_c = InputConverter("Altitude de lancamento", x -> x)
+    rail_length_c     = InputConverter("Comprimento do trilho", x -> x)
+
+    #parametros de entrada
+    empty_mass      = InputParameter([empty_mass_c])
+    rocket_cd       = InputParameter([rocket_cd_c ])
+    rocket_area     = InputParameter([rocket_area_c, rocket_diam_c, rocket_radius_c])
+    thrust          = InputParameter([thrust_c         ])
+    propellant_mass = InputParameter([propellant_mass_c])
+    burn_time       = InputParameter([burn_time_c      ])
+    drogue_cd       = InputParameter([drogue_cd_c      ])
+    drogue_area     = InputParameter([drogue_area_c    ])
+    main_cd         = InputParameter([main_cd_c        ])
+    main_area       = InputParameter([main_area_c      ])
+    launch_angle    = InputParameter([launch_angle_c   ])
+    launch_altitude = InputParameter([launch_altitude_c])
+    rail_length     = InputParameter([rail_length_c    ])
+    
+    parameter_list = [empty_mass     ,
+                      rocket_cd      ,
+                      rocket_area    ,
+                      thrust         ,
+                      propellant_mass,
+                      burn_time      ,
+                      drogue_cd      ,
+                      drogue_area    ,
+                      main_cd        ,
+                      main_area      ,
+                      launch_angle   ,
+                      launch_altitude,
+                      rail_length    ]
+    export parameter_list, param
+end
+
+using .InParameters
+#como fazer leitura alternativa????
 function read_project(projeto::String)
-    #valores-padrão impossíveis para cada input 
-    input_vals = Dict{String, Float64}(
-        "Massa vazia"                 => -1,
-        "Cd do foguete"               => -1,
-        "Area transversal do foguete" => -1,
-        "Diametro do foguete"         => -1,
-        "Raio do foguete"             => -1,
-        "Empuxo"                      => -1,
-        "Massa de propelente"         => -1,
-        "Tempo de queima"             => -1,
-        "Cd do drogue"                => -1,
-        "Area do drogue"              => -1,
-        "Cd do main"                  => -1,
-        "Area do main"                => -1,
-        "Angulo de lancamento"        => -1,
-        "Altitude de lancamento"      => -1,
-        "Comprimento do trilho"       => -1
-    )
+    remaining_parameters = collect(1:length(parameter_list))
 
     input_file = "./" * projeto * "/Entradas.txt"
     open(input_file, "r") do input
         for line in eachline(input)
-            line = lstrip(rstrip(line))
-            if isempty(line) continue end
             tokens = split(line, ":")
-            if length(tokens) != 2
-                error("Cada linha de input deve ter um :.")
+            name = string(tokens[1])
+            value = parse(Float64, tokens[2])
+            
+            match = -1
+            for i in remaining_parameters
+                if parameter_list[i](name, value)
+                    match = i
+                    break
+                end
             end
-            if tokens[1] in keys(input_vals)
-                input_vals[tokens[1]] = parse(Float64, tokens[2])
-            else
-                error("$(tokens[1]) não é uma entrada válida.")
-            end
+            popat!(remaining_parameters, findall(x -> x == match, remaining_parameters)[1])
         end
     end
-    #verifica se todos os inputs foram lidos
-    # alternative_input_keys = ["Area transversal do foguete", "Diametro do foguete", "Raio do foguete"]
-    # common_input_keys = [key for key in keys(input_vals) if !(key in alternative_input_keys)]
-    # if all(input_vals.[alternative_input_keys] .< 0) || any(input_vals.[common_input_keys] .< 0)
-    #     problem_keys = [key for key in keys(input_vals) if input_vals[key] < 0]
-    #     error("A entrada $(problem_keys[1]) não foi recebida")
-    # end
-
-    #calculo do diametro do foguete com base em qual possibilidade foi lida
-    if input_vals["Diametro do foguete"] > 0
-        rocket_area = π/4 * input_vals["Diametro do foguete"]^2
-    elseif input_vals["Raio do foguete"] > 0
-        rocket_area = π * input_vals["Raio do foguete"]^2
-    elseif input_vals["Area transversal do foguete"] > 0
-        rocket_area = input_vals["Area transversal do foguete"]
-    end
-
     return manual_input(
-            empty_mass      = input_vals["Massa vazia"],
-            rocket_cd       = input_vals["Cd do foguete"],
-            rocket_area     = rocket_area,
-            thrust          = input_vals["Empuxo"],
-            propellant_mass = input_vals["Massa de propelente"],
-            burn_time       = input_vals["Tempo de queima"],
-            drogue_cd       = input_vals["Cd do drogue"],
-            drogue_area     = input_vals["Area do drogue"],
-            main_cd         = input_vals["Cd do main"],
-            main_area       = input_vals["Area do main"],
-            launch_angle    = input_vals["Angulo de lancamento"],
-            launch_altitude = input_vals["Altitude de lancamento"],
-            rail_length     = input_vals["Comprimento do trilho"]
+            empty_mass      = InParameters.empty_mass.value     ,
+            rocket_cd       = InParameters.rocket_cd.value      ,
+            rocket_area     = InParameters.rocket_area.value    ,
+            thrust          = InParameters.thrust.value         ,
+            propellant_mass = InParameters.propellant_mass.value,
+            burn_time       = InParameters.burn_time.value      ,
+            drogue_cd       = InParameters.drogue_cd.value      ,
+            drogue_area     = InParameters.drogue_area.value    ,
+            main_cd         = InParameters.main_cd.value        ,
+            main_area       = InParameters.main_area.value      ,
+            launch_angle    = InParameters.launch_angle.value   ,
+            launch_altitude = InParameters.launch_altitude.value,
+            rail_length     = InParameters.rail_length.value    
         )
 end
+
+
 end
