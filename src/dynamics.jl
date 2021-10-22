@@ -28,10 +28,17 @@ function acc_rail(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
 end
 
 function acc_thrusted(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
-    [
-        0.0
-        0.0
-    ]
+    M = get_current_mass(t, rocket)
+    cosθ = X.vx/sqrt(X.vx^2 + X.vy^2)
+    sinθ = X.vy/sqrt(X.vx^2 + X.vy^2)
+
+    W = M * env.g(X.y+env.launch_altittude)
+    Thrust = currentThrust(t, rocket)
+    Drag = 1/2 * env.ρ(X.y+env.launch_altittude) * rocket.aed.area *
+                                     currentCd(X, rocket, env) * (X.vx^2 + X.vy^2)
+
+    Fx = cosθ * (Thrust - Drag)
+    Fy = sinθ * (Thrust - Drag) - W
 end
 
 function acc_ballistic(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
@@ -43,8 +50,8 @@ function acc_ballistic(t::Float64, X::StateVector, rocket::Rocket, env::Environm
     Drag = 1/2 * env.ρ(X.y+env.launch_altittude) * rocket.aed.area *
                                      currentCd(X, rocket, env) * (X.vx^2 + X.vy^2)
 
-    Fx = cosθ * (currentThrust(t, rocket) - Drag)
-    Fy = sinθ * (currentThrust(t, rocket) - Drag) + W
+    Fx = cosθ * ( - Drag)
+    Fy = sinθ * ( - Drag) - W
 
     return Fx/M, Fy/M
 end
