@@ -39,6 +39,7 @@ function acc_thrusted(t::Float64, X::StateVector, rocket::Rocket, env::Environme
 
     Fx = cosθ * (Thrust - Drag)
     Fy = sinθ * (Thrust - Drag) - W
+    return Fx/M, Fy/M
 end
 
 function acc_ballistic(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
@@ -88,7 +89,7 @@ end
 
 #funções auxiliares
 function get_current_mass(t::Float64, rocket::Rocket)
-    return max(rocket.empty_mass + (1 - t/rocket.propulsion.burn_time) *
+    return rocket.empty_mass + max((1 - t/rocket.propulsion.burn_time) *
                                          rocket.propulsion.prop_mass, 0)
 end
 
