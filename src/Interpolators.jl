@@ -48,4 +48,6 @@ function currentThrust(t::Float64, thrust::Matrix{Float64})
     end
 end
 
+
+
 end

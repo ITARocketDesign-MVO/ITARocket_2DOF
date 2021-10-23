@@ -1,8 +1,10 @@
 
 #tudo que precisar ser testado, fazer nessa pasta
-include("../Rocket_2DOF.jl")
+include("../src/Rocket_2DOF.jl")
 using .Rocket_2DOF
 #criação de condições iniciais:
+
+Leithrust("Montenegro-1")
 
 X₀, rocket, env = manual_input(
     empty_mass = 23.5,
