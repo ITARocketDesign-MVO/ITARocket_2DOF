@@ -13,9 +13,9 @@ include("ambient_conditions.jl")
 
 function manual_input(;
     empty_mass::Real,
-    rocket_cd::Real,
+    rocket_cd::Union{Real, Matrix{Float64}},
     rocket_area::Real,
-    thrust::Real,
+    thrust::Union{Real, Matrix{Float64}},
     propellant_mass::Real,
     burn_time::Real,
     drogue_cd::Real,
@@ -91,7 +91,7 @@ module InParameters
     end
 
     mutable struct InputParameter
-        value::Float64
+        value::Union{Float64, String}
         converters::Vector{InputConverter}
         function InputParameter(converters::Vector{InputConverter})
             new(-1, converters)
