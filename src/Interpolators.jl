@@ -4,7 +4,7 @@ using ....BaseDefinitions
 export currentCd, currentThrust
 
 function currentCd(X::StateVector, rocket::Rocket, env::Environment)
-    return currentCd(X, rocket.aed.Cd, env)
+    return currentCd(X, rocket.flight_phases[1].aed.Cd, env) #se a tabela de CD ficar guardada na fase 1
 end
 
 function currentCd(X::StateVector, Cd::Real, env::Environment)
