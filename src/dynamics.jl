@@ -3,7 +3,7 @@ using ...BaseDefinitions
 
 include("Interpolators.jl")
 using .Interpolators
-export acc_rail, acc_thrusted, acc_ballistic, acc_drogue, acc_main
+export acc_rail, acc_thrusted, acc_ballistic, acc_airbreak, acc_drogue, acc_main
 
 function acc_rail(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
     M = get_current_mass(t, rocket) #massa do foguete
@@ -57,7 +57,7 @@ function acc_ballistic(t::Float64, X::StateVector, rocket::Rocket, env::Environm
     return Fx/M, Fy/M
 end
 
-function acc_drogue(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
+function acc_airbreak(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
     M = get_current_mass(t, rocket)
     cosθ = X.vx/sqrt(X.vx^2 + X.vy^2)
     sinθ = X.vy/sqrt(X.vx^2 + X.vy^2)
@@ -72,14 +72,29 @@ function acc_drogue(t::Float64, X::StateVector, rocket::Rocket, env::Environment
     return Fx/M, Fy/M
 end
 
+function acc_drogue(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
+    M = get_current_mass(t, rocket)
+    cosθ = X.vx/sqrt(X.vx^2 + X.vy^2)
+    sinθ = X.vy/sqrt(X.vx^2 + X.vy^2)
+    
+    W = M * env.g(X.y+env.launch_altittude)
+    Drag = 1/2 * env.ρ(X.y+env.launch_altittude) * rocket.flight_phases[5].aed.area *
+                                    rocket.flight_phases[5].aed.Cd * (X.vx^2 + X.vy^2)
+
+    Fx = -cosθ * Drag
+    Fy = -sinθ * Drag - W
+
+    return Fx/M, Fy/M
+end
+
 function acc_main(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
     M = get_current_mass(t, rocket)
     cosθ = X.vx/sqrt(X.vx^2 + X.vy^2)
     sinθ = X.vy/sqrt(X.vx^2 + X.vy^2)
     
     W = M * env.g(X.y+env.launch_altittude)
-    Drag = 1/2 * env.ρ(X.y+env.launch_altittude) * rocket.flight_phases[5].aed.area * 
-                                    rocket.flight_phases[5].aed.Cd * (X.vx^2 + X.vy^2)
+    Drag = 1/2 * env.ρ(X.y+env.launch_altittude) * rocket.flight_phases[6].aed.area * 
+                                    rocket.flight_phases[6].aed.Cd * (X.vx^2 + X.vy^2)
 
     Fx = -cosθ * Drag
     Fy = -sinθ * Drag - W

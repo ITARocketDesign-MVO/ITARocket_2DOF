@@ -18,6 +18,8 @@ function manual_input(;
     thrust::Real,
     propellant_mass::Real,
     burn_time::Real,
+    airbreak_cd::Real,
+    airbreak_area::Real,
     drogue_cd::Real,
     drogue_area::Real,
     main_cd::Real,
@@ -41,13 +43,14 @@ function manual_input(;
 
     #fases de voo
     #incluir módulo das dinâmicas aqui
-    rail_phase = FlightPhase("rail", acc_rail, rail_end                    , Aed(rocket_cd, rocket_area))
-    thrusted_phase = FlightPhase("thrusted", acc_thrusted, thrusted_end    , Aed(rocket_cd, rocket_area))
-    ballistic_phase = FlightPhase("ballistic", acc_ballistic, ballistic_end, Aed(rocket_cd, rocket_area))
-    drogue_phase = FlightPhase("drogue", acc_drogue, drogue_end            , Aed(drogue_cd, drogue_area))
-    main_phase = FlightPhase("main", acc_main, main_end                    , Aed(  main_cd,   main_area))
+    rail_phase = FlightPhase("rail", acc_rail, rail_end                    , Aed(  rocket_cd,   rocket_area))
+    thrusted_phase = FlightPhase("thrusted", acc_thrusted, thrusted_end    , Aed(  rocket_cd,   rocket_area))
+    ballistic_phase = FlightPhase("ballistic", acc_ballistic, ballistic_end, Aed(  rocket_cd,   rocket_area))
+    airbreak_phase = FlightPhase("airbreak", acc_airbreak, airbreak_end    , Aed(airbreak_cd, airbreak_area))
+    drogue_phase = FlightPhase("drogue", acc_drogue, drogue_end            , Aed(  drogue_cd,   drogue_area))
+    main_phase = FlightPhase("main", acc_main, main_end                    , Aed(    main_cd,     main_area))
 
-    phases = [rail_phase, thrusted_phase, ballistic_phase, drogue_phase, main_phase]
+    phases = [rail_phase, thrusted_phase, ballistic_phase, airbreak_phase, drogue_phase, main_phase]
     rocket = Rocket(empty_mass, motor, phases)
 
     return X₀, rocket, env

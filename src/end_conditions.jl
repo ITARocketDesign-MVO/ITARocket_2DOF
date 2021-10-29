@@ -45,6 +45,9 @@ function ballistic_end(t::Float64, X::StateVector, rocket::Rocket, env::Environm
     return X.vy <= 0 
 end
 
+function airbreak_end(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
+    return X.vy <= 0 
+end
 """
     drogue_end(X::StateVector, rocket::Rocket, env::Environment, t::Float64)
 
