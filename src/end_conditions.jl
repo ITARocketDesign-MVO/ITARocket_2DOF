@@ -1,7 +1,7 @@
 module EndConditions
 using ..BaseDefinitions
 
-export rail_end, thrusted_end, ballistic_end, drogue_end, main_end
+export rail_end, thrusted_end, ballistic_end, airbreak_end, drogue_end, main_end
 
 """
     rail_end(X::StateVector, rocket::Rocket, env::Environment, t::Float64)
@@ -42,7 +42,7 @@ O voo livre termina no apogeu, isto é, o primeiro instante no qual ``vᵧ ≤ 0
 O drogue é acionado no fim do voo livre.
 """
 function ballistic_end(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
-    return X.vy <= 0 
+    return X.vy <= 0
 end
 
 function airbreak_end(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
