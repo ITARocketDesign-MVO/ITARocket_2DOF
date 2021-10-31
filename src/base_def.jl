@@ -62,7 +62,7 @@ end
 "Representação do motor do foguete."
 struct Propulsion
     #constante ou matriz n x 2, com (empuxo, tempo)
-    thrust::Union{Real, Matrix{Real}}
+    thrust::Union{Real, Matrix{<:Real}}
     #massa total de propelente
     prop_mass::Real
     #tempo de queima do motor (caso empuxo constante)

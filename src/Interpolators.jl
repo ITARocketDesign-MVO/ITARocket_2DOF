@@ -38,7 +38,7 @@ function currentThrust(t::Float64, thrust::Real)
 end
 
 function currentThrust(t::Float64, thrust::Matrix{Float64})
-    for i in 1:(size(thrust)[1])            
+    for i in 1:(size(thrust)[1]-1)            
         if t == thrust[i, 2] return thrust[i, 1] end   #thrust[i, 1]=empuxo ||||thrust[i, 2]=tempo 
         
         if (t > thrust[i, 2]) && (t < thrust[i+1, 2])

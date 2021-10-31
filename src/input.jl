@@ -15,7 +15,7 @@ function manual_input(;
     empty_mass::Real,
     rocket_cd::Real,
     rocket_area::Real,
-    thrust::Real,
+    thrust::Union{Real, Matrix{<:Real}},
     propellant_mass::Real,
     burn_time::Real,
     airbreak_cd::Real,
