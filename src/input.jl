@@ -94,7 +94,7 @@ module InParameters
         value::Union{Float64, String}
         converters::Vector{InputConverter}
         function InputParameter(converters::Vector{InputConverter})
-            new(-1, converters)
+            new(-1.0, converters)
         end
     end
 
