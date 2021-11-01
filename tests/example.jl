@@ -4,7 +4,6 @@ include("../src/Rocket_2DOF.jl")
 using .Rocket_2DOF
 #criação de condições iniciais:
 
-Leithrust("Montenegro-1")
 
 X₀, rocket, env = manual_input(
     empty_mass = 27.0,
@@ -13,8 +12,8 @@ X₀, rocket, env = manual_input(
     thrust = Leithrust("Montenegro-1"),
     propellant_mass = 4.56,
     burn_time = 6.74,
-    airbreak_cd = 0.7,    #cd e area do airbreak  estão iguais aos
-    airbreak_area = 2*pi*(0.079)^2, #do foguete, ou seja, não fazem diferença
+    airbreak_cd = 0.5,               #airbreak == foguete (valores de cd e area iguais)
+    airbreak_area = 2*pi*(0.079)^2,
     drogue_cd = 1.5,
     drogue_area = 0.7,
     main_cd = 1.5,
@@ -25,7 +24,7 @@ X₀, rocket, env = manual_input(
 )
 
 
-# Voo
+#Voo
 all_X = fullFlight(X₀, rocket, env)
 
 x1=[Element.x for Element in all_X["rail"][1]]
@@ -42,21 +41,21 @@ y4=[Element.y for Element in all_X["drogue"][1]]
 y5=[Element.y for Element in all_X["main"][1]]
 y=vcat(y1, y2, y3, y4, y5)
 
-vx1=[Element.vx for Element in all_X["rail"][1]]
-vx2=[Element.vx for Element in all_X["thrusted"][1]]
-vx3=[Element.vx for Element in all_X["airbreak"][1]]
-vx4=[Element.vx for Element in all_X["drogue"][1]]
-vx5=[Element.vx for Element in all_X["main"][1]]
-vx=vcat(vx1, vx2, vx3, vx4, vx5)
-
-vy1=[Element.vy for Element in all_X["rail"][1]]
-vy2=[Element.vy for Element in all_X["thrusted"][1]]
-vy3=[Element.vy for Element in all_X["airbreak"][1]]
-vy4=[Element.vy for Element in all_X["drogue"][1]]
-vy5=[Element.vy for Element in all_X["main"][1]]
-vy=vcat(vy1, vy2, vy3, vy4, vy5)
-
-v=(vx.^2+vy.^2).^(1/2)
+#vx1=[Element.vx for Element in all_X["rail"][1]]
+#vx2=[Element.vx for Element in all_X["thrusted"][1]]
+#vx3=[Element.vx for Element in all_X["airbreak"][1]]
+#vx4=[Element.vx for Element in all_X["drogue"][1]]
+#vx5=[Element.vx for Element in all_X["main"][1]]
+#vx=vcat(vx1, vx2, vx3, vx4, vx5)
+#
+#vy1=[Element.vy for Element in all_X["rail"][1]]
+#vy2=[Element.vy for Element in all_X["thrusted"][1]]
+#vy3=[Element.vy for Element in all_X["airbreak"][1]]
+#vy4=[Element.vy for Element in all_X["drogue"][1]]
+#vy5=[Element.vy for Element in all_X["main"][1]]
+#vy=vcat(vy1, vy2, vy3, vy4, vy5)
+#
+#v=(vx.^2+vy.^2).^(1/2)
 
 using Plots
 theme(:dark)
@@ -65,4 +64,3 @@ plot(x, y,
 title = "Trajetória",
 xlabel = "x(m)",
 ylabel = "y(m)",)
-

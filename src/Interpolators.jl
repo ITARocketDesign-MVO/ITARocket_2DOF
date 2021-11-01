@@ -37,17 +37,17 @@ function currentThrust(t::Float64, thrust::Real)
     return thrust
 end
 
-function currentThrust(t::Float64, thrust::Matrix{Float64})
+function currentThrust(t::Float64, thrust::Matrix{<:Real})
     for i in 1:(size(thrust)[1])            
-        if t == thrust[i, 2] 
-            return thrust[i, 1]   #thrust[i, 1]=empuxo ||||thrust[i, 2]=tempo 
+        if t == thrust[i, 1] 
+            return thrust[i, 2]   #thrust[i, 1]=empuxo ||||thrust[i, 2]=tempo 
 
-        elseif t > thrust[end, 2]
-            return 0
+        elseif t > thrust[end, 1]
+            return 0.0
             
-        elseif (t > thrust[i, 2]) && (t < thrust[i+1, 2])
-            return thrust[i, 1] + (t - thrust[i, 2]) * 
-                (thrust[i+1,1] - thrust[i,1]) / (thrust[i+1,2] - thrust[i,2])
+        elseif (t > thrust[i, 1]) && (t < thrust[i+1, 1])
+            return thrust[i, 2] + (t - thrust[i, 1]) *
+                 (thrust[i+1,2] - thrust[i,2]) / (thrust[i+1,1] - thrust[i,1])
         end
         
     end
