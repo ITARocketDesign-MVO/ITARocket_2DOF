@@ -2,6 +2,7 @@
 #tudo que precisar ser testado, fazer nessa pasta
 include("../src/Rocket_2DOF.jl")
 using .Rocket_2DOF
+using BenchmarkTools
 #criação de condições iniciais:
 
 Leithrust("Montenegro-1")
@@ -24,7 +25,9 @@ X₀, rocket, env = manual_input(
 
 
 # Voo
-all_X = fullFlight(X₀, rocket, env)
-
-
-
+allX = fullFlight(X₀, rocket, env)
+text_output(allX)
+height_time(allX)
+height_horizontal(allX)
+speed_time(allX)
+accel_time(allX)
