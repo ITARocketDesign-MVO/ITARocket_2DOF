@@ -170,6 +170,8 @@ function read_project(projeto::String)
     open(input_file, "r") do input
         for line in eachline(input)
             tokens = split(line, ":")
+            #elimina espaço em branco nas extremidades dos tokens
+            tokens = rstrip.(lstrip.(tokens))
             name = string(tokens[1])
             value = string(tokens[2])
             try
@@ -179,7 +181,6 @@ function read_project(projeto::String)
                     rethrow()
                 end
             end
-            display(value)
             match = -1
             for i in remaining_parameters
                 if parameter_list[i](name, value)
@@ -203,7 +204,6 @@ function read_project(projeto::String)
         if InParameters.thrust.value == "tabela"
             InParameters.thrust.value = read_thrust(project = projeto)
         else
-            
             InParameters.thrust.value = read_thrust(InParameters.thrust.value, project = projeto)
         end
     end
