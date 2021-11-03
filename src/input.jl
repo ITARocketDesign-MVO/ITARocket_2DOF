@@ -91,20 +91,33 @@ module InParameters
         name::String
         converter::Function
     end
-
-    mutable struct InputParameter
-        value::Union{Float64, String, Matrix{Float64}}
-        converters::Vector{InputConverter}
-        function InputParameter(converters::Vector{InputConverter})
-            new(-1.0, converters)
+    function (conv::InputConverter)(x)
+        conv.converter(x)
+    end
+    function (conv::InputConverter)(x, y)
+        try
+            conv.converter(x, y)
+        catch e
+            if e isa MethodError
+                conv(x)
+            end
         end
     end
 
-    function (param::InputParameter)(name::String, value::Union{Float64, String})
+    mutable struct InputParameter{T}
+        value::Union{Nothing, T}    #usar inicialização incompleta?
+        converters::Vector{InputConverter}
+        type::Type
+        function InputParameter{T}(converters::Vector{InputConverter}) where {T}
+            new(nothing, converters, T)
+        end
+    end
+
+    function (param::InputParameter)(name::String, value::String, proj::String)
         if name in [converter.name for converter in param.converters]
             for converter in param.converters
                 if converter.name == name
-                    param.value = converter.converter(value)
+                    param.value = converter(value, proj)
                     return true
                 end
             end
@@ -112,38 +125,50 @@ module InParameters
         return false
     end
 
-    empty_mass_c      = InputConverter("Massa vazia", x -> x)
-    rocket_cd_c       = InputConverter("Cd do foguete", x -> x)
-    rocket_cd_table_c = InputConverter("Tabela de Cd do foguete", x -> x)
-    rocket_area_c     = InputConverter("Area transversal do foguete", x -> x)
-    rocket_diam_c     = InputConverter("Diametro do foguete", x -> π/4*x^2)
-    rocket_radius_c   = InputConverter("Raio do foguete"    , x -> π*x^2)
-    thrust_c          = InputConverter("Empuxo", x -> x)
-    thrust_table_c    = InputConverter("Tabela de Empuxo", x -> x)
-    propellant_mass_c = InputConverter("Massa de propelente", x -> x)
-    burn_time_c       = InputConverter("Tempo de queima", x -> x)
-    drogue_cd_c       = InputConverter("Cd do drogue", x -> x)
-    drogue_area_c     = InputConverter("Area do drogue", x -> x)
-    main_cd_c         = InputConverter("Cd do main", x -> x)
-    main_area_c       = InputConverter("Area do main", x -> x)
-    launch_angle_c    = InputConverter("Angulo de lancamento", x -> x)
-    launch_altitude_c = InputConverter("Altitude de lancamento", x -> x)
-    rail_length_c     = InputConverter("Comprimento do trilho", x -> x)
+    empty_mass_c      = InputConverter("Massa vazia", x -> parse(Float64, x))
+    rocket_cd_c       = InputConverter("Cd do foguete", x -> parse(Float64, x))
+    rocket_cd_table_c = InputConverter("Tabela de Cd do foguete", (fname, proj) -> begin
+                            if fname == "tabela"
+                                parentmodule(InParameters).read_cd(project=proj)
+                            else
+                                parentmodule(InParameters).read_cd(fname, project=proj)
+                            end
+                        end)
+    rocket_area_c   = InputConverter("Area transversal do foguete", x -> parse(Float64, x))
+    rocket_diam_c   = InputConverter("Diametro do foguete", x -> π/4*parse(Float64, x)^2)
+    rocket_radius_c = InputConverter("Raio do foguete"    , x -> π*parse(Float64, x)^2)
+    thrust_c        = InputConverter("Empuxo", x -> parse(Float64, x))
+    thrust_table_c  = InputConverter("Tabela de Empuxo", (fname, proj) -> begin
+                            if fname == "tabela"
+                                parentmodule(InParameters).read_thrust(project=proj)
+                            else
+                                parentmodule(InParameters).read_thrust(fname, project=proj)
+                            end
+                        end)
+    propellant_mass_c = InputConverter("Massa de propelente",    x -> parse(Float64, x))
+    burn_time_c       = InputConverter("Tempo de queima",        x -> parse(Float64, x))
+    drogue_cd_c       = InputConverter("Cd do drogue",           x -> parse(Float64, x))
+    drogue_area_c     = InputConverter("Area do drogue",         x -> parse(Float64, x))
+    main_cd_c         = InputConverter("Cd do main",             x -> parse(Float64, x))
+    main_area_c       = InputConverter("Area do main",           x -> parse(Float64, x))
+    launch_angle_c    = InputConverter("Angulo de lancamento",   x -> parse(Float64, x))
+    launch_altitude_c = InputConverter("Altitude de lancamento", x -> parse(Float64, x))
+    rail_length_c     = InputConverter("Comprimento do trilho",  x -> parse(Float64, x))
 
     #parametros de entrada
-    empty_mass      = InputParameter([empty_mass_c])
-    rocket_cd       = InputParameter([rocket_cd_c, rocket_cd_table_c])
-    rocket_area     = InputParameter([rocket_area_c, rocket_diam_c, rocket_radius_c])
-    thrust          = InputParameter([thrust_c, thrust_table_c         ])
-    propellant_mass = InputParameter([propellant_mass_c])
-    burn_time       = InputParameter([burn_time_c      ])
-    drogue_cd       = InputParameter([drogue_cd_c      ])
-    drogue_area     = InputParameter([drogue_area_c    ])
-    main_cd         = InputParameter([main_cd_c        ])
-    main_area       = InputParameter([main_area_c      ])
-    launch_angle    = InputParameter([launch_angle_c   ])
-    launch_altitude = InputParameter([launch_altitude_c])
-    rail_length     = InputParameter([rail_length_c    ])
+    empty_mass      = InputParameter{Float64                        }([empty_mass_c])
+    rocket_cd       = InputParameter{Union{Float64, Matrix{Float64}}}([rocket_cd_c, rocket_cd_table_c])
+    rocket_area     = InputParameter{Float64                        }([rocket_area_c, rocket_diam_c, rocket_radius_c])
+    thrust          = InputParameter{Union{Float64, Matrix{Float64}}}([thrust_c, thrust_table_c])
+    propellant_mass = InputParameter{Float64                        }([propellant_mass_c])
+    burn_time       = InputParameter{Float64                        }([burn_time_c      ])
+    drogue_cd       = InputParameter{Float64                        }([drogue_cd_c      ])
+    drogue_area     = InputParameter{Float64                        }([drogue_area_c    ])
+    main_cd         = InputParameter{Float64                        }([main_cd_c        ])
+    main_area       = InputParameter{Float64                        }([main_area_c      ])
+    launch_angle    = InputParameter{Float64                        }([launch_angle_c   ])
+    launch_altitude = InputParameter{Float64                        }([launch_altitude_c])
+    rail_length     = InputParameter{Float64                        }([rail_length_c    ])
     
     parameter_list = [empty_mass     ,
                       rocket_cd      ,
@@ -174,16 +199,9 @@ function read_project(projeto::String)
             tokens = rstrip.(lstrip.(tokens))
             name = string(tokens[1])
             value = string(tokens[2])
-            try
-                value = parse(Float64, tokens[2])
-            catch e
-                if !(e isa ArgumentError)
-                    rethrow()
-                end
-            end
             match = -1
             for i in remaining_parameters
-                if parameter_list[i](name, value)
+                if parameter_list[i](name, value, projeto)
                     match = i
                     break
                 end
