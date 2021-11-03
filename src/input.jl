@@ -105,11 +105,12 @@ module InParameters
     end
 
     mutable struct InputParameter{T}
+        name::String
         value::Union{Nothing, T}    #usar inicialização incompleta?
         converters::Vector{InputConverter}
         type::Type
-        function InputParameter{T}(converters::Vector{InputConverter}) where {T}
-            new(nothing, converters, T)
+        function InputParameter{T}(name::String, converters::Vector{InputConverter}) where {T}
+            new(name, nothing, converters, T)
         end
     end
 
@@ -123,6 +124,15 @@ module InParameters
             end
         end
         return false
+    end
+
+    function validate_inputs(list::Vector{InputParameter})
+        for param = list
+            if param.value === nothing
+                error("O  parâmetro " * param.name * " não foi entrado. Use uma das possibilidades de entrada: \n" * 
+                        prod([conv.name * ",\n" for conv = param.converters]))
+            end
+        end
     end
 
     empty_mass_c      = InputConverter("Massa vazia", x -> parse(Float64, x))
@@ -156,19 +166,19 @@ module InParameters
     rail_length_c     = InputConverter("Comprimento do trilho",  x -> parse(Float64, x))
 
     #parametros de entrada
-    empty_mass      = InputParameter{Float64                        }([empty_mass_c])
-    rocket_cd       = InputParameter{Union{Float64, Matrix{Float64}}}([rocket_cd_c, rocket_cd_table_c])
-    rocket_area     = InputParameter{Float64                        }([rocket_area_c, rocket_diam_c, rocket_radius_c])
-    thrust          = InputParameter{Union{Float64, Matrix{Float64}}}([thrust_c, thrust_table_c])
-    propellant_mass = InputParameter{Float64                        }([propellant_mass_c])
-    burn_time       = InputParameter{Float64                        }([burn_time_c      ])
-    drogue_cd       = InputParameter{Float64                        }([drogue_cd_c      ])
-    drogue_area     = InputParameter{Float64                        }([drogue_area_c    ])
-    main_cd         = InputParameter{Float64                        }([main_cd_c        ])
-    main_area       = InputParameter{Float64                        }([main_area_c      ])
-    launch_angle    = InputParameter{Float64                        }([launch_angle_c   ])
-    launch_altitude = InputParameter{Float64                        }([launch_altitude_c])
-    rail_length     = InputParameter{Float64                        }([rail_length_c    ])
+    empty_mass      = InputParameter{Float64                        }("massa vazia", [empty_mass_c])
+    rocket_cd       = InputParameter{Union{Float64, Matrix{Float64}}}("coeficiente de arrasto", [rocket_cd_c, rocket_cd_table_c])
+    rocket_area     = InputParameter{Float64                        }("area transversal", [rocket_area_c, rocket_diam_c, rocket_radius_c])
+    thrust          = InputParameter{Union{Float64, Matrix{Float64}}}("empuxo", [thrust_c, thrust_table_c])
+    propellant_mass = InputParameter{Float64                        }("massa de propelente", [propellant_mass_c])
+    burn_time       = InputParameter{Float64                        }("tempo de queima", [burn_time_c      ])
+    drogue_cd       = InputParameter{Float64                        }("Cd do drogue", [drogue_cd_c      ])
+    drogue_area     = InputParameter{Float64                        }("área do drogue", [drogue_area_c    ])
+    main_cd         = InputParameter{Float64                        }("Cd do main", [main_cd_c        ])
+    main_area       = InputParameter{Float64                        }("área do main", [main_area_c      ])
+    launch_angle    = InputParameter{Float64                        }("ângulo de lançamento", [launch_angle_c   ])
+    launch_altitude = InputParameter{Float64                        }("altitude de lançamento", [launch_altitude_c])
+    rail_length     = InputParameter{Float64                        }("comprimento do trilho", [rail_length_c    ])
     
     parameter_list = [empty_mass     ,
                       rocket_cd      ,
@@ -183,7 +193,7 @@ module InParameters
                       launch_angle   ,
                       launch_altitude,
                       rail_length    ]
-    export parameter_list, param
+    export parameter_list, param, validate_inputs
 end
 
 using .InParameters
@@ -209,23 +219,7 @@ function read_project(projeto::String)
             popat!(remaining_parameters, findall(x -> x == match, remaining_parameters)[1])
         end
     end
-
-    #leitura de tabelas
-    if InParameters.rocket_cd.value isa String
-        if InParameters.rocket_cd.value == "tabela"
-            InParameters.rocket_cd.value = read_cd(project = projeto)
-        else
-            InParameters.rocket_cd.value = read_cd(InParameters.rocket_cd.value, project = projeto)
-        end
-    end
-    if InParameters.thrust.value isa String
-        if InParameters.thrust.value == "tabela"
-            InParameters.thrust.value = read_thrust(project = projeto)
-        else
-            InParameters.thrust.value = read_thrust(InParameters.thrust.value, project = projeto)
-        end
-    end
-
+    validate_inputs(parameter_list)
     return manual_input(
             empty_mass      = InParameters.empty_mass.value     ,
             rocket_cd       = InParameters.rocket_cd.value      ,
