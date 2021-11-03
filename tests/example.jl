@@ -24,43 +24,10 @@ X₀, rocket, env = manual_input(
 )
 
 
-#Voo
-all_X = fullFlight(X₀, rocket, env)
-
-x1=[Element.x for Element in all_X["rail"][1]]
-x2=[Element.x for Element in all_X["thrusted"][1]]
-x3=[Element.x for Element in all_X["airbreak"][1]]
-x4=[Element.x for Element in all_X["drogue"][1]]
-x5=[Element.x for Element in all_X["main"][1]]
-x=vcat(x1, x2, x3, x4, x5)
-
-y1=[Element.y for Element in all_X["rail"][1]]
-y2=[Element.y for Element in all_X["thrusted"][1]]
-y3=[Element.y for Element in all_X["airbreak"][1]]
-y4=[Element.y for Element in all_X["drogue"][1]]
-y5=[Element.y for Element in all_X["main"][1]]
-y=vcat(y1, y2, y3, y4, y5)
-
-#vx1=[Element.vx for Element in all_X["rail"][1]]
-#vx2=[Element.vx for Element in all_X["thrusted"][1]]
-#vx3=[Element.vx for Element in all_X["airbreak"][1]]
-#vx4=[Element.vx for Element in all_X["drogue"][1]]
-#vx5=[Element.vx for Element in all_X["main"][1]]
-#vx=vcat(vx1, vx2, vx3, vx4, vx5)
-#
-#vy1=[Element.vy for Element in all_X["rail"][1]]
-#vy2=[Element.vy for Element in all_X["thrusted"][1]]
-#vy3=[Element.vy for Element in all_X["airbreak"][1]]
-#vy4=[Element.vy for Element in all_X["drogue"][1]]
-#vy5=[Element.vy for Element in all_X["main"][1]]
-#vy=vcat(vy1, vy2, vy3, vy4, vy5)
-#
-#v=(vx.^2+vy.^2).^(1/2)
-
-using Plots
-theme(:dark)
-
-plot(x, y,
-title = "Trajetória",
-xlabel = "x(m)",
-ylabel = "y(m)",)
+# Voo
+allX = fullFlight(X₀, rocket, env)
+text_output(allX)
+height_time(allX)
+height_horizontal(allX)
+speed_time(allX)
+accel_time(allX)
