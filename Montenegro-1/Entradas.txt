@@ -1,7 +1,7 @@
 Massa vazia:23.5
-Cd do foguete:0.4
+Tabela de Cd do foguete:tabela
 Area transversal do foguete:0.08
-Empuxo:2000.0
+Tabela de Empuxo:tabela
 Massa de propelente:4.5
 Tempo de queima:6.74
 Cd do drogue:1.5

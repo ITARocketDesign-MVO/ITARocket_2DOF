@@ -24,7 +24,7 @@ using .Rocket_2DOF
 X₀, rocket, env = read_project("Montenegro-1")
 
 # Voo
-all_X = fullFlight(X₀, rocket, env)
+#all_X = fullFlight(X₀, rocket, env)
 
 
 

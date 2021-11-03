@@ -53,11 +53,12 @@ function manual_input(;
     return X₀, rocket, env
 end
 
-function read_cd(projeto::String)
+function read_cd(filename::String = "CDvMach.dat"; project::String = "")
     vel = [];   #vetor nulo
     cd = [];    #vetor nulo
-    caminho = string("./", projeto, "/CDvMach.dat")
-    x = open(caminho,"r") do x2
+    folder = "./" * project * ((isempty(project)) ? "" : "/") 
+    path = string(folder, filename)
+    x = open(path,"r") do x2
         for i in eachline(x2) 
             numeros = rsplit(i, "   ")                  #Separa a string em um vetor de string (obs.: separa a string de acordo com "   ")
             push!(vel, parse(Float64, numeros[2]));     #Push insere um elemento na próxima linha de uma matriz com uma coluna, push!(matriz, elemento)
@@ -68,11 +69,12 @@ function read_cd(projeto::String)
     return Cd;
 end
 
-function read_thrust(projeto::String)
+function read_thrust(filename::String = "Empuxo.dat"; project::String = "")
     tempo = []    #vetor nulo
     Empuxo = []    #vetor nulo
-    caminho = string("./", projeto, "/Empuxo.dat")
-    x = open(caminho,"r") do x
+    folder = "./" * project * ((isempty(project)) ? "" : "/") 
+    path = string(folder, filename)
+    x = open(path,"r") do x
         for i in eachline(x) 
             numeros = rsplit(i, "\t")                   #Separa a string em um vetor de string (obs.: separa a string de acordo com "\t")
             push!(tempo, parse(Float64, numeros[1]));   #Push insere um elemento na próxima linha de uma matriz com uma coluna, push!(matriz, elemento)
@@ -91,14 +93,14 @@ module InParameters
     end
 
     mutable struct InputParameter
-        value::Union{Float64, String}
+        value::Union{Float64, String, Matrix{Float64}}
         converters::Vector{InputConverter}
         function InputParameter(converters::Vector{InputConverter})
             new(-1.0, converters)
         end
     end
 
-    function (param::InputParameter)(name::String, value::Float64)
+    function (param::InputParameter)(name::String, value::Union{Float64, String})
         if name in [converter.name for converter in param.converters]
             for converter in param.converters
                 if converter.name == name
@@ -112,10 +114,12 @@ module InParameters
 
     empty_mass_c      = InputConverter("Massa vazia", x -> x)
     rocket_cd_c       = InputConverter("Cd do foguete", x -> x)
+    rocket_cd_table_c = InputConverter("Tabela de Cd do foguete", x -> x)
     rocket_area_c     = InputConverter("Area transversal do foguete", x -> x)
     rocket_diam_c     = InputConverter("Diametro do foguete", x -> π/4*x^2)
     rocket_radius_c   = InputConverter("Raio do foguete"    , x -> π*x^2)
     thrust_c          = InputConverter("Empuxo", x -> x)
+    thrust_table_c    = InputConverter("Tabela de Empuxo", x -> x)
     propellant_mass_c = InputConverter("Massa de propelente", x -> x)
     burn_time_c       = InputConverter("Tempo de queima", x -> x)
     drogue_cd_c       = InputConverter("Cd do drogue", x -> x)
@@ -128,9 +132,9 @@ module InParameters
 
     #parametros de entrada
     empty_mass      = InputParameter([empty_mass_c])
-    rocket_cd       = InputParameter([rocket_cd_c ])
+    rocket_cd       = InputParameter([rocket_cd_c, rocket_cd_table_c])
     rocket_area     = InputParameter([rocket_area_c, rocket_diam_c, rocket_radius_c])
-    thrust          = InputParameter([thrust_c         ])
+    thrust          = InputParameter([thrust_c, thrust_table_c         ])
     propellant_mass = InputParameter([propellant_mass_c])
     burn_time       = InputParameter([burn_time_c      ])
     drogue_cd       = InputParameter([drogue_cd_c      ])
@@ -158,7 +162,7 @@ module InParameters
 end
 
 using .InParameters
-#como fazer leitura alternativa????
+#validar todos os inputs
 function read_project(projeto::String)
     remaining_parameters = collect(1:length(parameter_list))
 
@@ -167,8 +171,15 @@ function read_project(projeto::String)
         for line in eachline(input)
             tokens = split(line, ":")
             name = string(tokens[1])
-            value = parse(Float64, tokens[2])
-            
+            value = string(tokens[2])
+            try
+                value = parse(Float64, tokens[2])
+            catch e
+                if !(e isa ArgumentError)
+                    rethrow()
+                end
+            end
+            display(value)
             match = -1
             for i in remaining_parameters
                 if parameter_list[i](name, value)
@@ -179,6 +190,24 @@ function read_project(projeto::String)
             popat!(remaining_parameters, findall(x -> x == match, remaining_parameters)[1])
         end
     end
+
+    #leitura de tabelas
+    if InParameters.rocket_cd.value isa String
+        if InParameters.rocket_cd.value == "tabela"
+            InParameters.rocket_cd.value = read_cd(project = projeto)
+        else
+            InParameters.rocket_cd.value = read_cd(InParameters.rocket_cd.value, project = projeto)
+        end
+    end
+    if InParameters.thrust.value isa String
+        if InParameters.thrust.value == "tabela"
+            InParameters.thrust.value = read_thrust(project = projeto)
+        else
+            
+            InParameters.thrust.value = read_thrust(InParameters.thrust.value, project = projeto)
+        end
+    end
+
     return manual_input(
             empty_mass      = InParameters.empty_mass.value     ,
             rocket_cd       = InParameters.rocket_cd.value      ,
