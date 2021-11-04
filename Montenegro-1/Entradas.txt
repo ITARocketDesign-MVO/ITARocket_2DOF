@@ -1,8 +1,14 @@
+
+#inputs do montenegro1
+
+
 Massa vazia                : 23.5
+Massa cheia: 10
 Tabela de Cd do foguete    : tabela
 Area transversal do foguete: 0.08
 Tabela de Empuxo           : tabela
 Massa de propelente        : 4.5
+           
 Tempo de queima            : 6.74
 Cd do drogue               : 1.5
 Area do drogue             : 0.7
