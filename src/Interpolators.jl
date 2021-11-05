@@ -49,7 +49,7 @@ function currentThrust(t::Float64, thrust::Matrix{<:Real})
             return thrust[i, 2] + (t - thrust[i, 1]) *
                  (thrust[i+1,2] - thrust[i,2]) / (thrust[i+1,1] - thrust[i,1])
         end
-        
+
     end
 end
 

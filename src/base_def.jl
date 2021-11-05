@@ -54,7 +54,7 @@ struct Aed
     #de velocidade
     #coeficiente de arrasto - constante ou matriz n x 2 contendo
     #pontos de (Cd, N_mach)
-    Cd::Union{Real, Matrix{Real}}
+    Cd::Union{Real, Matrix{<:Real}}
     #area da seção transversal do objeto
     area::Float64
 end

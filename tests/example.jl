@@ -7,7 +7,7 @@ using .Rocket_2DOF
 
 X₀, rocket, env = manual_input(
     empty_mass = 27.0,
-    rocket_cd = 0.5,
+    rocket_cd = Leitcd("Montenegro-1"),
     rocket_area = pi*(0.079)^2,
     thrust = Leithrust("Montenegro-1"),
     propellant_mass = 4.56,
