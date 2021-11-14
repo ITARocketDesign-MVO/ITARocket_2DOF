@@ -102,7 +102,7 @@ function fullFlight(X0::StateVector, rocket::Rocket,
         end
 
         # Proxima fase do voo
-        if(phase == 2) phase += 1 end
+        #if(phase == 2) phase += 1 end
 
         phase += 1
         t = t_end
