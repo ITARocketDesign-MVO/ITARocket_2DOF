@@ -7,12 +7,12 @@ using .Rocket_2DOF
 
 X₀, rocket, env = manual_input(
     empty_mass = 27.0,
-    rocket_cd = 0.4,
+    rocket_cd = 0.45,
     rocket_area = pi*(0.079)^2,
     thrust = 2000,
     propellant_mass = 4.56,
     burn_time = 6.74,
-    airbreak_cd = 0.5,               #airbreak == foguete (valores de cd e area iguais)
+    airbreak_cd = 0.5,
     airbreak_area = 2*pi*(0.079)^2,
     drogue_cd = 1.5,
     drogue_area = 0.7,
