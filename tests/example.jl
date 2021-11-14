@@ -7,9 +7,9 @@ using .Rocket_2DOF
 
 X₀, rocket, env = manual_input(
     empty_mass = 27.0,
-    rocket_cd = read_cd(project = "Montenegro-1"),
+    rocket_cd = 0.4,
     rocket_area = pi*(0.079)^2,
-    thrust = read_thrust(project = "Montenegro-1"),
+    thrust = 2000,
     propellant_mass = 4.56,
     burn_time = 6.74,
     airbreak_cd = 0.5,               #airbreak == foguete (valores de cd e area iguais)
