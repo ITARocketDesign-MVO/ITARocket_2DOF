@@ -2,16 +2,14 @@
 #tudo que precisar ser testado, fazer nessa pasta
 include("../src/Rocket_2DOF.jl")
 using .Rocket_2DOF
-#using BenchmarkTools
 #criação de condições iniciais:
 
-Leithrust("Montenegro-1")
 
 X₀, rocket, env = manual_input(
     empty_mass = 27.0,
-    rocket_cd = Leitcd("Montenegro-1"),
+    rocket_cd = read_cd(project = "Montenegro-1"),
     rocket_area = pi*(0.079)^2,
-    thrust = Leithrust("Montenegro-1"),
+    thrust = read_thrust(project = "Montenegro-1"),
     propellant_mass = 4.56,
     burn_time = 6.74,
     # airbreak_cd = 0.5,               #airbreak == foguete (valores de cd e area iguais)
