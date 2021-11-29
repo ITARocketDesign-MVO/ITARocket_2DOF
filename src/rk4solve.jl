@@ -19,13 +19,13 @@ function rk4solver(t::Real, X::StateVector, rocket::Rocket,
 
     Xdot = rocket.flight_phases[phase].dynamic
 
-    k1 = StateVector(X.vx,X.vy,(Xdot(t,X,rocket,env))...)
+    k1 = StateVector(X.vx,X.vy,(Xdot(t,X,rocket,env, phase))...)
     X1 = X + (dt / 2) * k1
-    k2 = StateVector(X1.vx,X1.vy,(Xdot(t+dt/2,X1,rocket,env))...)
+    k2 = StateVector(X1.vx,X1.vy,(Xdot(t+dt/2,X1,rocket,env, phase))...)
     X2 = X + (dt / 2) * k2
-    k3 = StateVector(X2.vx,X2.vy,(Xdot(t+dt/2, X2,rocket,env))...)
+    k3 = StateVector(X2.vx,X2.vy,(Xdot(t+dt/2, X2,rocket,env, phase))...)
     X3 = X + dt * k3
-    k4 = StateVector(X3.vx,X3.vy,(Xdot(t+dt,X3,rocket,env))...)
+    k4 = StateVector(X3.vx,X3.vy,(Xdot(t+dt,X3,rocket,env, phase))...)
 
     return X + (dt / 6) * (k1 + 2 * k2 + 2 * k3 + k4)
 
