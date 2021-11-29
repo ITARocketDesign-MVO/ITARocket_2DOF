@@ -1,4 +1,4 @@
-module Rocket_2DOF
+module ITARocket_2DOF
 include("base_def.jl")
 include("input.jl")
 include("output.jl")
