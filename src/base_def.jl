@@ -75,6 +75,7 @@ struct FlightPhase
     name::String
     dynamic::Function
     end_condition::Function
+    aed::Aed
 end
 
 "Estrutura do foguete. Contém todas as informações pertinentes ao voo, exceto as características do ambiente."
@@ -82,9 +83,6 @@ struct Rocket
     #massa vazia, incluindo motor, sem propelente
     empty_mass::Real
     propulsion::Propulsion
-    aed::Aed
-    drogue::Aed
-    main::Aed
     flight_phases::Vector{FlightPhase}
 end
 

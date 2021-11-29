@@ -7,13 +7,13 @@ using .Rocket_2DOF
 
 X₀, rocket, env = manual_input(
     empty_mass = 27.0,
-    rocket_cd = read_cd(project = "Montenegro-1"),
+    rocket_cd = 0.45,
     rocket_area = pi*(0.079)^2,
-    thrust = read_thrust(project = "Montenegro-1"),
+    thrust = 2000,
     propellant_mass = 4.56,
     burn_time = 6.74,
-    # airbreak_cd = 0.5,               #airbreak == foguete (valores de cd e area iguais)
-    # airbreak_area = 2*pi*(0.079)^2,
+    airbreak_cd = 0.5,
+    airbreak_area = 2*pi*(0.079)^2,
     drogue_cd = 1.5,
     drogue_area = 0.7,
     main_cd = 1.5,
@@ -26,7 +26,7 @@ X₀, rocket, env = manual_input(
 # Voo
 allX = fullFlight(X₀, rocket, env)
 text_output(allX)
-height_time(allX)
-height_horizontal(allX)
-speed_time(allX)
-accel_time(allX)
+# height_time(allX)
+# height_horizontal(allX)
+# speed_time(allX)
+# accel_time(allX)
