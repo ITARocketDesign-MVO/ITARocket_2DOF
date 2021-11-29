@@ -1,8 +1,0 @@
-max velocity: 352.34537873824814 
-apogee: 4883.338124587704 
-max acceleration: 54.787456583696326 
-velocity on rail exit : 23.27223202077121 
-velocity on drogue opening: 31.31767867194791 
-acceleration on drogue opening: -13.240517437825616 
-velocity on main opening: 21.232130803860016 
-acceleration on main opening: -46.11043446892893

@@ -1,7 +1,7 @@
 
 #tudo que precisar ser testado, fazer nessa pasta
-include("../src/Rocket_2DOF.jl")
-using .Rocket_2DOF
+include("../src/ITARocket_2DOF.jl")
+using .ITARocket_2DOF
 #criação de condições iniciais:
 
 
@@ -26,7 +26,7 @@ X₀, rocket, env = manual_input(
 # Voo
 allX = fullFlight(X₀, rocket, env)
 text_output(allX)
-# height_time(allX)
-# height_horizontal(allX)
-# speed_time(allX)
-# accel_time(allX)
+height_time(allX)
+height_horizontal(allX)
+speed_time(allX)
+accel_time(allX)
