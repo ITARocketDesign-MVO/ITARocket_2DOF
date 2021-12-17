@@ -98,8 +98,8 @@ function read_cd(filename::String = "CDvMach.dat"; project::String = "")
     x = open(path,"r") do x2
         for i in eachline(x2) 
             numeros = rsplit(i, " ", keepempty=false)                  #Separa a string em um vetor de string (obs.: separa a string de acordo com "   ")
-            push!(vel, parse(Float64, numeros[2]));     #Push insere um elemento na próxima linha de uma matriz com uma coluna, push!(matriz, elemento)
-            push!(cd, parse(Float64, numeros[3]));      #o elemento é o parse(...), parse serve pra transformar: parse(o formato que tu quer, o que você quer transformar)
+            push!(vel, parse(Float64, numeros[1]));     #Push insere um elemento na próxima linha de uma matriz com uma coluna, push!(matriz, elemento)
+            push!(cd, parse(Float64, numeros[2]));      #o elemento é o parse(...), parse serve pra transformar: parse(o formato que tu quer, o que você quer transformar)
        end                                             #no caso transforma string para float
     end
     Cd = hcat(vel, cd);  #concatena duas matrizes no  sentido das colunas 
@@ -231,24 +231,22 @@ module InParameters
     #lista de conversores
     empty_mass_c      = InputConverter("Massa vazia",            x -> parse(Float64, x))
     rocket_cd_c       = InputConverter("Cd do foguete",          x -> parse(Float64, x))
-    rocket_cd_table_c = InputConverter("Tabela de Cd do foguete", (fname, proj) -> begin
-                            if fname == "tabela"
+    rocket_cd_table_c = InputConverter("Tabela de Cd do foguete", (fname, proj) ->
+                            (fname == "tabela") ?
                                 parentmodule(InParameters).read_cd(project=proj)
-                            else
+                            :
                                 parentmodule(InParameters).read_cd(fname, project=proj)
-                            end
-                        end)
+                            )
     rocket_area_c   = InputConverter("Area transversal do foguete", x -> parse(Float64, x))
     rocket_diam_c   = InputConverter("Diametro do foguete",      x -> π/4*parse(Float64, x)^2)
     rocket_radius_c = InputConverter("Raio do foguete"    ,      x -> π*parse(Float64, x)^2)
     thrust_c        = InputConverter("Empuxo",                   x -> parse(Float64, x))
-    thrust_table_c  = InputConverter("Tabela de Empuxo",         (fname, proj) -> begin
-                            if fname == "tabela"
+    thrust_table_c  = InputConverter("Tabela de Empuxo",         (fname, proj) ->
+                            (fname == "tabela") ?
                                 parentmodule(InParameters).read_thrust(project=proj)
-                            else
+                            :
                                 parentmodule(InParameters).read_thrust(fname, project=proj)
-                            end
-                        end)
+                            )
     propellant_mass_c = InputConverter("Massa de propelente",    x -> parse(Float64, x))
     burn_time_c       = InputConverter("Tempo de queima",        x -> parse(Float64, x))
     drogue_cd_c       = InputConverter("Cd do drogue",           x -> parse(Float64, x))
@@ -339,7 +337,7 @@ function read_project(projeto::String)
         end
     end
     #verifica se todos os inputs têm valor
-    #validate_inputs(parameter_list)
+    validate_inputs(parameter_list)
     return manual_input(
             empty_mass      = InParameters.empty_mass.value     ,
             rocket_cd       = InParameters.rocket_cd.value      ,
