@@ -339,7 +339,7 @@ function read_project(projeto::String)
         end
     end
     #verifica se todos os inputs têm valor
-    validate_inputs(parameter_list)
+    #validate_inputs(parameter_list)
     return manual_input(
             empty_mass      = InParameters.empty_mass.value     ,
             rocket_cd       = InParameters.rocket_cd.value      ,
