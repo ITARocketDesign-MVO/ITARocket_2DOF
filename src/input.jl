@@ -97,7 +97,7 @@ function read_cd(filename::String = "CDvMach.dat"; project::String = "")
     path = string(folder, filename)
     x = open(path,"r") do x2
         for i in eachline(x2) 
-            numeros = rsplit(i, "   ")                  #Separa a string em um vetor de string (obs.: separa a string de acordo com "   ")
+            numeros = rsplit(i, " ", keepempty=false)                  #Separa a string em um vetor de string (obs.: separa a string de acordo com "   ")
             push!(vel, parse(Float64, numeros[2]));     #Push insere um elemento na próxima linha de uma matriz com uma coluna, push!(matriz, elemento)
             push!(cd, parse(Float64, numeros[3]));      #o elemento é o parse(...), parse serve pra transformar: parse(o formato que tu quer, o que você quer transformar)
        end                                             #no caso transforma string para float
@@ -133,7 +133,7 @@ function read_thrust(filename::String = "Empuxo.dat"; project::String = "")
     path = string(folder, filename)
     x = open(path,"r") do x
         for i in eachline(x) 
-            numeros = rsplit(i, "\t")                   #Separa a string em um vetor de string (obs.: separa a string de acordo com "\t")
+            numeros = rsplit(i, " ", keepempty=false)                   #Separa a string em um vetor de string (obs.: separa a string de acordo com "\t")
             push!(tempo, parse(Float64, numeros[1]));   #Push insere um elemento na próxima linha de uma matriz com uma coluna, push!(matriz, elemento)
             push!(Empuxo, parse(Float64, numeros[2]));  #o elemento é o parse(...), parse serve pra transformar: parse(o formato que tu quer, o que você quer transformar)
         end                                             #no caso transforma string para float
@@ -347,6 +347,8 @@ function read_project(projeto::String)
             thrust          = InParameters.thrust.value         ,
             propellant_mass = InParameters.propellant_mass.value,
             burn_time       = InParameters.burn_time.value      ,
+            airbreak_cd     = InParameters.rocket_cd.value      ,
+            airbreak_area   = InParameters.rocket_area.value    ,
             drogue_cd       = InParameters.drogue_cd.value      ,
             drogue_area     = InParameters.drogue_area.value    ,
             main_cd         = InParameters.main_cd.value        ,
