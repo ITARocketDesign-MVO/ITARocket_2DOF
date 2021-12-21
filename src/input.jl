@@ -97,7 +97,7 @@ function read_cd(filename::String = "CDvMach.dat"; project::String = "")
     path = string(folder, filename)
     x = open(path,"r") do x2
         for i in eachline(x2) 
-            numeros = rsplit(i, " ", keepempty=false)                  #Separa a string em um vetor de string (obs.: separa a string de acordo com "   ")
+            numeros = split(i, r"\s", keepempty=false)                  #Separa a string em um vetor de string (obs.: separa a string de acordo com "   ")
             push!(vel, parse(Float64, numeros[1]));     #Push insere um elemento na próxima linha de uma matriz com uma coluna, push!(matriz, elemento)
             push!(cd, parse(Float64, numeros[2]));      #o elemento é o parse(...), parse serve pra transformar: parse(o formato que tu quer, o que você quer transformar)
        end                                             #no caso transforma string para float
@@ -133,7 +133,7 @@ function read_thrust(filename::String = "Empuxo.dat"; project::String = "")
     path = string(folder, filename)
     x = open(path,"r") do x
         for i in eachline(x) 
-            numeros = rsplit(i, " ", keepempty=false)                   #Separa a string em um vetor de string (obs.: separa a string de acordo com "\t")
+            numeros = split(i, r"\s", keepempty=false)                   #Separa a string em um vetor de string (obs.: separa a string de acordo com "\t")
             push!(tempo, parse(Float64, numeros[1]));   #Push insere um elemento na próxima linha de uma matriz com uma coluna, push!(matriz, elemento)
             push!(Empuxo, parse(Float64, numeros[2]));  #o elemento é o parse(...), parse serve pra transformar: parse(o formato que tu quer, o que você quer transformar)
         end                                             #no caso transforma string para float
@@ -190,7 +190,9 @@ module InParameters
         #busca o conversor de nome correto e aciona ele
         for converter in param.converters
             if converter.name == name
+                print(name*"    ")
                 param.value = converter(input, proj)
+                println(param.value)
                 return true
             end
         end
