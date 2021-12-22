@@ -190,9 +190,7 @@ module InParameters
         #busca o conversor de nome correto e aciona ele
         for converter in param.converters
             if converter.name == name
-                print(name*"    ")
                 param.value = converter(input, proj)
-                println(param.value)
                 return true
             end
         end
@@ -231,7 +229,7 @@ module InParameters
     #                   Definições específicas do foguete
 
     #lista de conversores
-    empty_mass_c      = InputConverter("Massa vazia",            x -> parse(Float64, x))
+    empty_mass_c      = InputConverter("Massa vazia (kg)",            x -> parse(Float64, x))
     rocket_cd_c       = InputConverter("Cd do foguete",          x -> parse(Float64, x))
     rocket_cd_table_c = InputConverter("Tabela de Cd do foguete", (fname, proj) ->
                             (fname == "tabela") ?
@@ -239,31 +237,36 @@ module InParameters
                             :
                                 parentmodule(InParameters).read_cd(fname, project=proj)
                             )
-    rocket_area_c   = InputConverter("Area transversal do foguete", x -> parse(Float64, x))
-    rocket_diam_c   = InputConverter("Diametro do foguete",      x -> π/4*parse(Float64, x)^2)
-    rocket_radius_c = InputConverter("Raio do foguete"    ,      x -> π*parse(Float64, x)^2)
-    thrust_c        = InputConverter("Empuxo",                   x -> parse(Float64, x))
+    rocket_area_c   = InputConverter("Area transversal do foguete (m^2)", x -> parse(Float64, x))
+    rocket_diam_c   = InputConverter("Diametro do foguete (m)",      x -> π/4*parse(Float64, x)^2)
+    rocket_radius_c = InputConverter("Raio do foguete (m)"    ,      x -> π*parse(Float64, x)^2)
+    airbreak_cd_c   = InputConverter("Cd do airbreak", x -> parse(Float64, x))
+    airbreak_area_c = InputConverter("Area do airbreak (m^2)", x -> parse(Float64, x))
+    thrust_c        = InputConverter("Empuxo (N)",                   x -> parse(Float64, x))
     thrust_table_c  = InputConverter("Tabela de Empuxo",         (fname, proj) ->
                             (fname == "tabela") ?
                                 parentmodule(InParameters).read_thrust(project=proj)
                             :
                                 parentmodule(InParameters).read_thrust(fname, project=proj)
                             )
-    propellant_mass_c = InputConverter("Massa de propelente",    x -> parse(Float64, x))
-    burn_time_c       = InputConverter("Tempo de queima",        x -> parse(Float64, x))
+    propellant_mass_c = InputConverter("Massa de propelente (kg)",    x -> parse(Float64, x))
+    burn_time_c       = InputConverter("Tempo de queima (s)",        x -> parse(Float64, x))
     drogue_cd_c       = InputConverter("Cd do drogue",           x -> parse(Float64, x))
-    drogue_area_c     = InputConverter("Area do drogue",         x -> parse(Float64, x))
+    drogue_area_c     = InputConverter("Area do drogue (m^2)",         x -> parse(Float64, x))
     main_cd_c         = InputConverter("Cd do main",             x -> parse(Float64, x))
-    main_area_c       = InputConverter("Area do main",           x -> parse(Float64, x))
-    launch_angle_c    = InputConverter("Angulo de lancamento",   x -> parse(Float64, x))
-    launch_altitude_c = InputConverter("Altitude de lancamento", x -> parse(Float64, x))
-    rail_length_c     = InputConverter("Comprimento do trilho",  x -> parse(Float64, x))
+    main_area_c       = InputConverter("Area do main (m^2)",           x -> parse(Float64, x))
+    launch_angle_c    = InputConverter("Angulo de lancamento (graus)",   x -> parse(Float64, x))
+    launch_altitude_c = InputConverter("Altitude de lancamento (m)", x -> parse(Float64, x))
+    rail_length_c     = InputConverter("Comprimento do trilho (m)",  x -> parse(Float64, x))
+    rail_length_ft_c     = InputConverter("Comprimento do trilho (ft)",  x -> 0.3048*parse(Float64, x))
 
     #lista de parâmetros do foguete. São os mesmos que na manual_input
     empty_mass      = InputParameter{Float64}("massa vazia", [empty_mass_c])
     rocket_cd       = InputParameter{Union{Float64, Matrix{Float64}}}(
             "coeficiente de arrasto", [rocket_cd_c, rocket_cd_table_c])
     rocket_area     = InputParameter{Float64}("area transversal", [rocket_area_c, rocket_diam_c, rocket_radius_c])
+    airbreak_cd     = InputParameter{Float64}("Cd do airbreak", [airbreak_cd_c])
+    airbreak_area   = InputParameter{Float64}("Area do airbreak", [airbreak_area_c])
     thrust          = InputParameter{Union{Float64, Matrix{Float64}}}(
             "empuxo", [thrust_c, thrust_table_c])
     propellant_mass = InputParameter{Float64}("massa de propelente", [propellant_mass_c])
@@ -281,6 +284,8 @@ module InParameters
     parameter_list = [empty_mass     ,
                       rocket_cd      ,
                       rocket_area    ,
+                      airbreak_cd    ,
+                      airbreak_area  ,
                       thrust         ,
                       propellant_mass,
                       burn_time      ,
@@ -347,8 +352,8 @@ function read_project(projeto::String)
             thrust          = InParameters.thrust.value         ,
             propellant_mass = InParameters.propellant_mass.value,
             burn_time       = InParameters.burn_time.value      ,
-            airbreak_cd     = 0     ,
-            airbreak_area   = 0    ,
+            airbreak_cd     = InParameters.airbreak_cd.value    ,
+            airbreak_area   = InParameters.airbreak_area.value  ,
             drogue_cd       = InParameters.drogue_cd.value      ,
             drogue_area     = InParameters.drogue_area.value    ,
             main_cd         = InParameters.main_cd.value        ,
