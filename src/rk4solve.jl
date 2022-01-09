@@ -65,7 +65,8 @@ function solveStage(t::Real, X0::StateVector, rocket::Rocket,
     end
 
     # Todas as posições percorridas pelo foguete e o momento que a fase termina
-    return all_Xs[1:j - 1], t_start, t - dt
+    (t_start != t) && return all_Xs[1:j - 1], t_start, t - dt
+    return all_Xs[1:j - 1], t, t
 end
 
 

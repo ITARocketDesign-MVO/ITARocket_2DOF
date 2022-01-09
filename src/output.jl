@@ -1,11 +1,13 @@
 module Outputs
 # módulo para obtenção de gráficos e parâmetros
-using ..BaseDefinitions, Plots
+include("ambient_conditions.jl")
+using ..BaseDefinitions, Plots, .AmbientConditions
 export text_output, height_time, height_horizontal, speed_time, accel_time
+
 
 function text_output(full_Flight::Dict{Any, Any}, dt::Float64=0.001)
     # Definição das variáveis pra ficar menos confuso
-    max_vel = 0; apogee = 0; rail_exit_vel = 0; # max_mach = 0; N sei implementar numero de mach
+    max_vel = 0; apogee = 0; rail_exit_vel = 0; max_mach = 0;
     drogue_open_vel = 0; main_open_vel = 0; max_acc = 0;
     drogue_open_acc = 0; main_open_acc = 0;
 
@@ -16,12 +18,14 @@ function text_output(full_Flight::Dict{Any, Any}, dt::Float64=0.001)
                 X = Xs[i]
                 # Cálculo da velocidade e aceleração
                 X_vel = vel_mod(X)
+                X_mach = X_vel/Vsom(X.y)
                 X_acc = (vel_mod(Xs[i + 1]) - vel_mod(X))/dt
 
                 # Atribuição dos valores relevantes
                 (X.y > apogee) && (apogee = X.y)
                 (X_vel > max_vel) && (max_vel = X_vel)
                 (X_acc > max_acc) && (max_acc = X_acc)
+                (X_mach > max_mach) && (max_mach = X_mach)
             end
 
             # Atribuição de valores específicos de interesse
@@ -36,6 +40,7 @@ function text_output(full_Flight::Dict{Any, Any}, dt::Float64=0.001)
     # Apresentação no terminal
     println("max velocity: $max_vel \n", "apogee: $apogee \n",
             "max acceleration: $max_acc \n",
+            "max mach number: $max_mach \n",
             "velocity on rail exit : $rail_exit_vel \n",
             "velocity on drogue opening: $drogue_open_vel \n",
             "acceleration on drogue opening: $drogue_open_acc \n",
@@ -46,6 +51,7 @@ function text_output(full_Flight::Dict{Any, Any}, dt::Float64=0.001)
     open("outputs/output.txt", "w") do io
         write(io, "max velocity: $max_vel \n", "apogee: $apogee \n")
         write(io, "max acceleration: $max_acc \n")
+        write(io, "max mach number: $max_mach \n")
         write(io, "velocity on rail exit : $rail_exit_vel \n")
         write(io, "velocity on drogue opening: $drogue_open_vel \n")
         write(io, "acceleration on drogue opening: $drogue_open_acc \n")

@@ -1,4 +1,5 @@
 module AmbientConditions
+export Vsom
 """
     Vsom(k::Float64)
 
@@ -8,7 +9,7 @@ Reta ajustada a partir dos dados em https://www.engineeringtoolbox.com/elevation
 """
 function Vsom(k::Float64)
     return 340.6147266777097 - 0.004065762999474718*k
-end 
+end
 
 """
     rho(k::Float64)
@@ -19,12 +20,12 @@ Curva ajustada a partir de: https://www.engineeringtoolbox.com/standard-atmosphe
 """
 function rho(k::Float64)
     return 1.2228930069930133 - 0.00011386139860140224*k + 3.314685314685659e-9*k^2
-end 
+end
 
 """
     g(h::Float64)
 
-Aceleração da gravidade a uma altitude h acima do nível do mar. 
+Aceleração da gravidade a uma altitude h acima do nível do mar.
 Atualmente a latitude está ajustada para 23,3568°.
 Fonte: https://dialnet.unirioja.es/descarga/articulo/5165503.pdf
 """
