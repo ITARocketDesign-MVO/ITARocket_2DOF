@@ -1,7 +1,6 @@
 
 #tudo que precisar ser testado, fazer nessa pasta
-include("../src/ITARocket_2DOF.jl")
-using .ITARocket_2DOF
+using ITARocket_2DOF
 #criação de condições iniciais:
 
 
