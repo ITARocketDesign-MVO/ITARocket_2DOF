@@ -27,16 +27,17 @@ function text_output(res::SimResults, dt::Float64=0.1; project::String = ".")
             (X_acc > max_acc) && (max_acc = X_acc)
             (X_mach > max_mach) && (max_mach = X_mach)
         end
-
-        # Atribuição de valores específicos de interesse
-        (phase == "rail") && (rail_exit_vel = vel_mod(Xs[end]))
-        (phase == "drogue") && (drogue_open_vel = vel_mod(Xs[1]);
-                                drogue_open_acc = (vel_mod(Xs[2]) - vel_mod(Xs[1])) / res.dt)
-        (phase == "main") && (main_open_vel = vel_mod(Xs[1]);
-                                main_open_acc = (vel_mod(Xs[2]) - vel_mod(Xs[1])) / res.dt)
-    
     end
 
+    # Atribuição de valores específicos de interesse
+    
+    rail_exit_vel = vel_mod(res["rail"][end])
+    drogue_open_vel = vel_mod(res["drogue"][1])
+    # fase airbreak tá vazia, consertar
+    drogue_open_acc = vel_mod(res[res.phase_transition_times[4]] - res[res.phase_transition_times[4] - res.dt]) / res.dt
+    main_open_vel = vel_mod(res["main"][1]);
+    main_open_acc = vel_mod(res[res.phase_transition_times[5]] - res[res.phase_transition_times[5] - res.dt]) / res.dt
+    
     # Apresentação no terminal
     println("max velocity: $max_vel \n", "apogee: $apogee \n",
             "max acceleration: $max_acc \n",
@@ -103,22 +104,18 @@ end
 
 function accel_time(res::SimResults; project::String = ".")
     plot(0, 0)
+    accel_vec = vel_mod.(res.state_vector_list[2:end] - res.state_vector_list[1:end-1]) / res.dt
+    pushfirst!(accel_vec, 0)    #corrige o comprimento de accel_vec p ficar igual ao do res.state_vector_list
+    current_phase_start_index = 1
     for (j, phase) in enumerate(res.phases)
-        # Vetor de velocidade
-        accel_vec = Vector{Any}(undef, length(res[phase]))
-        for i in 1:length(accel_vec)
-            if i == 1 || i == length(accel_vec)
-                accel_vec[i] = 0
-            else
-                accel_vec[i] = vel_mod(res.state_vector_list[i+1]-res.state_vector_list[i]) / res.dt
-            end
-        end
-        # Plot de cada fase do voo
-        if length(accel_vec) >0
+        current_phase_end_index = current_phase_start_index + length(res[phase]) - 1
+        if length(accel_vec) > 0
+            # Plot de cada fase do voo
             plot!(range( (j==1) ? 0 : res.phase_transition_times[j-1],
-                            stop =res.phase_transition_times[j],
-                            length =length(res[phase])), accel_vec, lab="")
+                                stop =res.phase_transition_times[j],
+                                length =length(res[phase])), accel_vec[current_phase_start_index:current_phase_end_index], lab="")
         end
+        current_phase_start_index = current_phase_end_index + 1
     end
     # Salvar em .png
     png("$project/accel_time")

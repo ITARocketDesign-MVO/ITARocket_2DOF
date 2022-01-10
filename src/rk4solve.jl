@@ -65,8 +65,8 @@ function solveStage(t::Real, X0::StateVector, rocket::Rocket,
     end
 
     # Todas as posições percorridas pelo foguete e o momento que a fase termina
-    (t_start != t) && return all_Xs[1:j - 1], t - dt
-    return all_Xs[1:j - 1], t
+    (t_start != t) && return all_Xs[2:j - 1], t - dt
+    return all_Xs[2:j - 1], t
 end
 
 
@@ -90,6 +90,7 @@ function simulate(X0::StateVector, rocket::Rocket,
     t = 0.0
     
     state_vector_list = Vector{StateVector}()
+    push!(state_vector_list, X0)
     phase_transition_times = Vector{Float64}()
     phase_names = Vector{String}()
 
@@ -100,12 +101,14 @@ function simulate(X0::StateVector, rocket::Rocket,
         
         # Armazena as informações necessarias
         push!(state_vector_list, Xs...)
-        push!(phase_transition_times, t_end)
+        #arredonda o tempo de término para o múltiplo de dt mais próximo
+        push!(phase_transition_times, dt * round(t_end/dt))
         push!(phase_names, rocket.flight_phases[phase_index].name)
 
         # Condicao inicial da proxima fase do voo
-        transition_state = Xs[end]
-
+        if length(Xs) > 0
+            transition_state = Xs[end]
+        end
         # Vetor de fases percorrido, finalizacao
         if phase_index == length(rocket.flight_phases) || phase_index == end_phase_index
             return SimResults(dt, state_vector_list, phase_transition_times, phase_names)

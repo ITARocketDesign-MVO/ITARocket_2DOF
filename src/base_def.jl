@@ -125,6 +125,15 @@ struct SimResults
 end
 
 import Base: getindex
+
+"""
+    getindex(res::SimResults, t::Float64)
+
+Indexação dos resultados de simulção pelo tempo.
+
+Qualquer valor de tempo entre o começo e o fim do voo é aceito. 
+O valor de retorno é linearmente interpolado entre estados adjacentes.
+"""
 function getindex(res::SimResults, t::Float64)
     if !(0 <= t <= res.dt*length(res.state_vector_list))
         throw(BoundsError(res.state_vector_list, t))
@@ -132,9 +141,24 @@ function getindex(res::SimResults, t::Float64)
     
     #interpola estados mais próximos
     fl = Int(floor(t/res.dt))
-    return res.state_vector_list[fl] + (t - fl) * res.state_vector_list[fl+1]
+    return res.state_vector_list[fl] + (t/res.dt - fl) * res.state_vector_list[fl+1]
 end
 
+"""
+    getindex(res::SimResults, phase::String)
+
+Seleção dos estados que pertencem a uma fase do voo do foguete.
+
+A indexação é feita com os nomes das fases:
+* "rail"
+* "thrusted"
+* "ballistic"
+* "airbreak"
+* "drogue"
+* "main"
+
+*Obs*: o último estado de uma fase é sempre igual ao primeiro da próxima. É uma feature, não um bug.
+"""
 function getindex(res::SimResults, phase::String)
     if !(phase in res.phases)
         throw(KeyError(phase))
@@ -144,8 +168,9 @@ function getindex(res::SimResults, phase::String)
     phase_index = findfirst(el -> el==phase, res.phases)
     phase_start = (phase_index == 1) ? 0 : res.phase_transition_times[phase_index-1]
     phase_end = res.phase_transition_times[phase_index]
+    #algo de errado aqui
     index_start = Int(floor(phase_start/res.dt))+1
-    index_end = Int(floor(phase_end/res.dt))
+    index_end = Int(floor(phase_end/res.dt))+1
     return res.state_vector_list[index_start:index_end]
 end
 
