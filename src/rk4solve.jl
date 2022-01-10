@@ -1,6 +1,6 @@
 module Solver
 using ..BaseDefinitions
-export fullFlight
+export simulate
 
 """
     rk4solver(t::Real, X::StateVector, rocket::Rocket,
@@ -65,47 +65,56 @@ function solveStage(t::Real, X0::StateVector, rocket::Rocket,
     end
 
     # Todas as posições percorridas pelo foguete e o momento que a fase termina
-    (t_start != t) && return all_Xs[1:j - 1], t_start, t - dt
-    return all_Xs[1:j - 1], t, t
+    (t_start != t) && return all_Xs[1:j - 1], t - dt
+    return all_Xs[1:j - 1], t
 end
 
 
 
 """
-    fullFlight(X0::StateVector, rocket::Rocket,
+    simulate(X0::StateVector, rocket::Rocket,
                env::Environment, dt::Float64=0.001)
 
 Descreve a trajetória do foguete durante todo o voo, passando por todas
 as fases definidas em _rocket.flightphases_
 """
-function fullFlight(X0::StateVector, rocket::Rocket,
-                    env::Environment, dt::Float64=0.001)
+function simulate(X0::StateVector, rocket::Rocket,
+                    env::Environment, dt::Float64=0.001; start_phase_index = 1, end_phase_index = Inf)
 
-    phase = 1
-    full_Flight = Dict{Any, Any}()
+    if 1 <= start_phase_index <= length(rocket.flight_phases)
+        phase_index = start_phase_index
+    else
+        error("Não existe uma fase de voo com índice $(start_phase_index)!\n")
+    end
     transition_state = X0
     t = 0.0
+    
+    state_vector_list = Vector{StateVector}()
+    phase_transition_times = Vector{Float64}()
+    phase_names = Vector{String}()
 
     while true
 
-        # Armazena a trajetoria e momento final de uma fase do voo
-        all_Xs, t_start, t_end = solveStage(t, transition_state, rocket, env, phase, dt)
-        full_Flight[rocket.flight_phases[phase].name] = (all_Xs, t_start, t_end)
+        # Resolve uma fase do voo
+        Xs, t_end = solveStage(t, transition_state, rocket, env, phase_index, dt)
+        
+        # Armazena as informações necessarias
+        push!(state_vector_list, Xs...)
+        push!(phase_transition_times, t_end)
+        push!(phase_names, rocket.flight_phases[phase_index].name)
 
         # Condicao inicial da proxima fase do voo
-        transition_state = all_Xs[end]
+        transition_state = Xs[end]
 
         # Vetor de fases percorrido, finalizacao
-        if phase == length(rocket.flight_phases)
-            full_Flight["end"] = Vector{Any}(undef, 1)
-            full_Flight["end"][1] = all_Xs[end]
-            return full_Flight
+        if phase_index == length(rocket.flight_phases) || phase_index == end_phase_index
+            return SimResults(dt, state_vector_list, phase_transition_times, phase_names)
         end
 
         # Proxima fase do voo
         #if(phase == 2) phase += 1 end
 
-        phase += 1
+        phase_index += 1
         t = t_end
     end
 end

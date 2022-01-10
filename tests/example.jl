@@ -9,7 +9,7 @@ X₀, rocket, env = manual_input(
     empty_mass = 27.0,
     rocket_cd = 0.45,
     rocket_area = pi*(0.079)^2,
-    thrust = 2000,
+    thrust = 3000,
     propellant_mass = 4.56,
     burn_time = 6.74,
     airbreak_cd = 0.5,
@@ -23,10 +23,12 @@ X₀, rocket, env = manual_input(
     rail_length = 5
 )
 
-# Voo
-allX = fullFlight(X₀, rocket, env)
-text_output(allX)
-height_time(allX)
-height_horizontal(allX)
-speed_time(allX)
+## Voo
+#resultados negativos???
+allX = simulate(X₀, rocket, env, end_phase_index = 4)
+##
+# text_output(allX)
+# height_time(allX)
+# height_horizontal(allX)
+# speed_time(allX)
 accel_time(allX)

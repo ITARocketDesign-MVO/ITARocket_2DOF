@@ -1,6 +1,6 @@
 module BaseDefinitions
 
-export StateVector, Aed, Propulsion, FlightPhase, Rocket, Rail, Environment
+export StateVector, Aed, Propulsion, FlightPhase, Rocket, Rail, Environment, SimResults
 
 "Representação do vetor de estados do foguete."
 struct StateVector
@@ -44,6 +44,14 @@ function Base.:*(α::Real, vec::StateVector)
                 α*vec.y,
                 α*vec.vx,
                 α*vec.vy
+                )
+end
+
+function Base.:-(vec1::StateVector, vec2::StateVector)
+    StateVector(vec1.x - vec2.x,
+                vec1.y - vec2.y,
+                vec1.vx - vec2.vx,
+                vec1.vy - vec2.vy
                 )
 end
 
@@ -106,6 +114,39 @@ struct Environment
     rail::Rail
     #altitude de lançamento, acima do nível do mar
     launch_altittude::Real
+end
+
+"Representação dos dados obtidos da simulação."
+struct SimResults
+    dt::Float64
+    state_vector_list::Vector{StateVector}
+    phase_transition_times::Vector{Float64}
+    phases::Vector{String}
+end
+
+import Base: getindex
+function getindex(res::SimResults, t::Float64)
+    if !(0 <= t <= res.dt*length(res.state_vector_list))
+        throw(BoundsError(res.state_vector_list, t))
+    end
+    
+    #interpola estados mais próximos
+    fl = Int(floor(t/res.dt))
+    return res.state_vector_list[fl] + (t - fl) * res.state_vector_list[fl+1]
+end
+
+function getindex(res::SimResults, phase::String)
+    if !(phase in res.phases)
+        throw(KeyError(phase))
+    end
+
+    #retorna um vetor com os estados dessa fase
+    phase_index = findfirst(el -> el==phase, res.phases)
+    phase_start = (phase_index == 1) ? 0 : res.phase_transition_times[phase_index-1]
+    phase_end = res.phase_transition_times[phase_index]
+    index_start = Int(floor(phase_start/res.dt))+1
+    index_end = Int(floor(phase_end/res.dt))
+    return res.state_vector_list[index_start:index_end]
 end
 
 end
