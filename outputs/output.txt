@@ -1,9 +1,0 @@
-max velocity: 347.6804992955044 
-apogee: 4649.056497967414 
-max acceleration: 54.65616195918699 
-max mach number: 1.0355784670555606 
-velocity on rail exit : 23.27083290432747 
-velocity on drogue opening: 29.954394076460098 
-acceleration on drogue opening: -12.431741427526788 
-velocity on main opening: 21.232121299204294 
-acceleration on main opening: -46.11043439780005
