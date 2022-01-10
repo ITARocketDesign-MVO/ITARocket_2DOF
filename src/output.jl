@@ -71,6 +71,7 @@ function height_time(res::SimResults; project::String = ".")
                             stop=res.phase_transition_times[i],
                             length=length(res[phase])), height_vec, lab="")
     end
+    ylabel!("Altura AGL (m)"); xlabel!("Tempo (s)")
     # Salvar em .png
     png("$project/height_time")
 end
@@ -84,6 +85,7 @@ function height_horizontal(res::SimResults; project::String = ".")
         # Plot de cada fase do voo
         plot!(x_vec, y_vec, lab="")
     end
+    ylabel!("Altura AGL (m)"); xlabel!("Deslocamento horizontal (m)")
     # Salvar em .png
     png("$project/height_horizontal")
 end
@@ -98,6 +100,7 @@ function speed_time(res::SimResults; project::String = ".")
                     stop=res.phase_transition_times[i],
                     length=length(res[phase])), speed_vec, lab="")
     end
+    ylabel!("Velocidade total (m/s)"); xlabel!("Tempo (s)")
     # Salvar em .png
     png("$project/speed_time")
 end
@@ -117,6 +120,7 @@ function accel_time(res::SimResults; project::String = ".")
         end
         current_phase_start_index = current_phase_end_index + 1
     end
+    ylabel!("Aceleração (m/s^2)"); xlabel!("Tempo (s)")
     # Salvar em .png
     png("$project/accel_time")
 end
