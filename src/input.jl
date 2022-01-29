@@ -60,12 +60,20 @@ function manual_input(;
     #incluir módulo das dinâmicas aqui
     rail_phase = FlightPhase("rail", acc_rail, rail_end                    , Aed(  rocket_cd,   rocket_area))
     thrusted_phase = FlightPhase("thrusted", acc_thrusted, thrusted_end    , Aed(  rocket_cd,   rocket_area))
-    ballistic_phase = FlightPhase("ballistic", acc_ballistic, ballistic_end, Aed(  rocket_cd,   rocket_area))
-    airbreak_phase = FlightPhase("airbreak", acc_airbreak, airbreak_end    , Aed(airbreak_cd, airbreak_area))
     drogue_phase = FlightPhase("drogue", acc_drogue, drogue_end            , Aed(  drogue_cd,   drogue_area))
     main_phase = FlightPhase("main", acc_main, main_end                    , Aed(    main_cd,     main_area))
-
-    phases = [rail_phase, thrusted_phase, ballistic_phase, airbreak_phase, drogue_phase, main_phase]
+    
+    if airbrake_options == "noairbrake"
+        ballistic_phase = FlightPhase("ballistic", acc_ballistic, noairbrake_ballistic_end, Aed(  rocket_cd,   rocket_area))
+        phases = [rail_phase, thrusted_phase, ballistic_phase, drogue_phase, main_phase]
+    elseif airbrake_options == "justairbrake"
+        airbrake_phase = FlightPhase("airbrake", acc_airbrake, justairbrake_airbrake_end    , Aed(airbrake_cd, airbrake_area))
+        phases = [rail_phase, thrusted_phase, airbrake_phase, drogue_phase, main_phase]
+    elseif airbrake_options == "fulllogic"
+        error("Not yet implemented")
+    else
+        error("Possible values for airbrake_options are \"noairbrake\", \"justairbrake\", \"fulllogic\"")
+    end
     rocket = Rocket(empty_mass, motor, phases)
 
     return X₀, rocket, env
