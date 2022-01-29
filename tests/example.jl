@@ -11,7 +11,7 @@ X₀, rocket, env = manual_input(
     thrust = 3000,
     propellant_mass = 4.56,
     burn_time = 6.74,
-    airbrake_cd = 0.5,
+    airbrake_cd = 1.3,
     airbrake_area = 2*pi*(0.079)^2,
     drogue_cd = 1.5,
     drogue_area = 0.7,
@@ -19,7 +19,8 @@ X₀, rocket, env = manual_input(
     main_area = 4,
     launch_angle = 85,
     launch_altitude = 645,
-    rail_length = 5
+    rail_length = 5,
+    airbrake_options = "justairbrake"
 )
 
 ## Voo
@@ -30,11 +31,3 @@ height_time(allX)
 height_horizontal(allX)
 speed_time(allX)
 accel_time(allX)
-@assert length(0:allX.dt:allX.phase_transition_times[1]) == length(allX["rail"]) "Tempo incompatível na fase rail"
-@assert length(allX.phase_transition_times[1]:allX.dt:allX.phase_transition_times[2]) == length(allX["thrusted"]) "Tempo incompatível na fase thrusted"
-@assert length(allX.phase_transition_times[2]:allX.dt:allX.phase_transition_times[3]) == length(allX["ballistic"]) "Tempo incompatível na fase ballistic"
-@assert length(allX.phase_transition_times[3]:allX.dt:allX.phase_transition_times[4]) == length(allX["airbrake"]) "Tempo incompatível na fase airbrake"
-@assert length(allX.phase_transition_times[4]:allX.dt:allX.phase_transition_times[5]) == length(allX["drogue"]) "Tempo incompatível na fase drogue"
-@assert length(allX.phase_transition_times[5]:allX.dt:allX.phase_transition_times[6]) == length(allX["main"]) "Tempo incompatível na fase main"
-
-@assert all([next != prev for (next, prev) in zip(allX.state_vector_list[2:end], allX.state_vector_list[1:end-1])]) "Estados repetidos!"

@@ -1,7 +1,7 @@
 module EndConditions
 using ..BaseDefinitions
 
-export rail_end, thrusted_end, ballistic_end, airbrake_end, drogue_end, main_end
+export rail_end, thrusted_end, noairbrake_ballistic_end, ballistic_end, airbrake_end, drogue_end, main_end
 
 """
     rail_end(X::StateVector, rocket::Rocket, env::Environment, t::Float64)
@@ -34,19 +34,33 @@ function thrusted_end(t::Float64, X::StateVector, rocket::Rocket, env::Environme
 end
 
 """
-    ballistic_end(X::StateVector, rocket::Rocket, env::Environment, t::Float64)
+    noairbrake_ballistic_end(X::StateVector, rocket::Rocket, env::Environment, t::Float64)
 
-Verifica se a fase de voo livre terminou.
+Verifica se a fase de voo livre no voo sem airbrake terminou.
 
 O voo livre termina no apogeu, isto é, o primeiro instante no qual ``vᵧ ≤ 0``.
 O drogue é acionado no fim do voo livre.
 """
-function ballistic_end(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
-    return X.vy <= 0 #Aqui que esta que o airbrake aciona logo após o fim da queima
+function noairbrake_ballistic_end(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
+    return X.vy ≤ 0
 end
 
+#implementar lógica do airbrake
+function ballistic_end(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
+    return true
+end
+
+
+"""
+    justairbrake_airbrake_end(X::StateVector, rocket::Rocket, env::Environment, t::Float64)
+
+Verifica se a fase de voo sob efeito do airbrake terminou.
+
+A fase do airbrake termina no apogeu, isto é, o primeiro instante no qual ``vᵧ ≤ 0``.
+O drogue é acionado depois dessa fase.
+"""
 function airbrake_end(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
-    return  true
+    return  X.vy ≤ 0
 end
 """
     drogue_end(X::StateVector, rocket::Rocket, env::Environment, t::Float64)

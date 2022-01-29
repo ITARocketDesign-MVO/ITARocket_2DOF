@@ -43,7 +43,7 @@ function manual_input(;
     launch_angle::Real,
     launch_altitude::Real,
     rail_length::Real,
-    airbrake_options::String = "noairbrake" #valores: "noairbrake", "justairbrake", "fulllogic" (implementar)
+    airbrake_option::String = "noairbrake" #valores: "noairbrake", "justairbrake", "fulllogic" (implementar)
 )
     X₀ = StateVector(0, 0, 0, 0)
 
@@ -63,16 +63,16 @@ function manual_input(;
     drogue_phase = FlightPhase("drogue", acc_drogue, drogue_end            , Aed(  drogue_cd,   drogue_area))
     main_phase = FlightPhase("main", acc_main, main_end                    , Aed(    main_cd,     main_area))
     
-    if airbrake_options == "noairbrake"
+    if airbrake_option == "noairbrake"
         ballistic_phase = FlightPhase("ballistic", acc_ballistic, noairbrake_ballistic_end, Aed(  rocket_cd,   rocket_area))
         phases = [rail_phase, thrusted_phase, ballistic_phase, drogue_phase, main_phase]
-    elseif airbrake_options == "justairbrake"
-        airbrake_phase = FlightPhase("airbrake", acc_airbrake, justairbrake_airbrake_end    , Aed(airbrake_cd, airbrake_area))
+    elseif airbrake_option == "justairbrake"
+        airbrake_phase = FlightPhase("airbrake", acc_airbrake, airbrake_end    , Aed(airbrake_cd, airbrake_area))
         phases = [rail_phase, thrusted_phase, airbrake_phase, drogue_phase, main_phase]
-    elseif airbrake_options == "fulllogic"
+    elseif airbrake_option == "fulllogic"
         error("Not yet implemented")
     else
-        error("Possible values for airbrake_options are \"noairbrake\", \"justairbrake\", \"fulllogic\"")
+        error("Possible values for airbrake_option are \"noairbrake\", \"justairbrake\", \"fulllogic\"")
     end
     rocket = Rocket(empty_mass, motor, phases)
 
@@ -258,16 +258,17 @@ module InParameters
                             :
                                 parentmodule(InParameters).read_thrust(fname, project=proj)
                             )
-    propellant_mass_c = InputConverter("Massa de propelente (kg)",    x -> parse(Float64, x))
-    burn_time_c       = InputConverter("Tempo de queima (s)",        x -> parse(Float64, x))
-    drogue_cd_c       = InputConverter("Cd do drogue",           x -> parse(Float64, x))
-    drogue_area_c     = InputConverter("Area do drogue (m^2)",         x -> parse(Float64, x))
-    main_cd_c         = InputConverter("Cd do main",             x -> parse(Float64, x))
-    main_area_c       = InputConverter("Area do main (m^2)",           x -> parse(Float64, x))
-    launch_angle_c    = InputConverter("Angulo de lancamento (graus)",   x -> parse(Float64, x))
-    launch_altitude_c = InputConverter("Altitude de lancamento (m)", x -> parse(Float64, x))
-    rail_length_c     = InputConverter("Comprimento do trilho (m)",  x -> parse(Float64, x))
-    rail_length_ft_c     = InputConverter("Comprimento do trilho (ft)",  x -> 0.3048*parse(Float64, x))
+    propellant_mass_c  = InputConverter("Massa de propelente (kg)",    x -> parse(Float64, x))
+    burn_time_c        = InputConverter("Tempo de queima (s)",        x -> parse(Float64, x))
+    drogue_cd_c        = InputConverter("Cd do drogue",           x -> parse(Float64, x))
+    drogue_area_c      = InputConverter("Area do drogue (m^2)",         x -> parse(Float64, x))
+    main_cd_c          = InputConverter("Cd do main",             x -> parse(Float64, x))
+    main_area_c        = InputConverter("Area do main (m^2)",           x -> parse(Float64, x))
+    launch_angle_c     = InputConverter("Angulo de lancamento (graus)",   x -> parse(Float64, x))
+    launch_altitude_c  = InputConverter("Altitude de lancamento (m)", x -> parse(Float64, x))
+    rail_length_c      = InputConverter("Comprimento do trilho (m)",  x -> parse(Float64, x))
+    rail_length_ft_c   = InputConverter("Comprimento do trilho (ft)",  x -> 0.3048*parse(Float64, x))
+    airbrake_options_c = InputConverter("Opção de airbrake", x -> x)
 
     #lista de parâmetros do foguete. São os mesmos que na manual_input
     empty_mass      = InputParameter{Float64}("massa vazia", [empty_mass_c])
@@ -287,7 +288,7 @@ module InParameters
     launch_angle    = InputParameter{Float64}("ângulo de lançamento", [launch_angle_c   ])
     launch_altitude = InputParameter{Float64}("altitude de lançamento", [launch_altitude_c])
     rail_length     = InputParameter{Float64}("comprimento do trilho", [rail_length_c    ])
-    
+    airbrake_option = InputParameter{String}("Opção de airbrake", [airbrake_options_c])
     #lista de REFERENCIAS aos parâmtros para fácil iteração.
     #obs: a alteração dos elementos dessa lista altera as variáveis acima também!
     parameter_list = [empty_mass     ,
@@ -304,7 +305,8 @@ module InParameters
                       main_area      ,
                       launch_angle   ,
                       launch_altitude,
-                      rail_length    ]
+                      rail_length    ,
+                      airbrake_option]
     export parameter_list, param, validate_inputs, validate_line
 end
 
@@ -369,7 +371,8 @@ function read_project(projeto::String)
             main_area       = InParameters.main_area.value      ,
             launch_angle    = InParameters.launch_angle.value   ,
             launch_altitude = InParameters.launch_altitude.value,
-            rail_length     = InParameters.rail_length.value    
+            rail_length     = InParameters.rail_length.value    ,
+            airbrake_option = InParameters.airbrake_option.value    
         )
 end
 
