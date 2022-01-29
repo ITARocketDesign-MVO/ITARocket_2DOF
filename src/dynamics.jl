@@ -3,7 +3,7 @@ using ...BaseDefinitions
 
 include("Interpolators.jl")
 using .Interpolators
-export acc_rail, acc_thrusted, acc_ballistic, acc_airbreak, acc_drogue, acc_main
+export acc_rail, acc_thrusted, acc_ballistic, acc_airbrake, acc_drogue, acc_main
 
 function acc_rail(t::Float64, X::StateVector, rocket::Rocket, env::Environment, phase::Int)
     M = get_current_mass(t, rocket) #massa do foguete
@@ -57,7 +57,7 @@ function acc_ballistic(t::Float64, X::StateVector, rocket::Rocket, env::Environm
     return Fx/M, Fy/M
 end
 
-function acc_airbreak(t::Float64, X::StateVector, rocket::Rocket, env::Environment, phase::Int)
+function acc_airbrake(t::Float64, X::StateVector, rocket::Rocket, env::Environment, phase::Int)
     M = get_current_mass(t, rocket)
     cosθ = X.vx/sqrt(X.vx^2 + X.vy^2)
     sinθ = X.vy/sqrt(X.vx^2 + X.vy^2)

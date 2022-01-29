@@ -34,15 +34,16 @@ function manual_input(;
     thrust::Union{Real, Matrix{<:Real}},
     propellant_mass::Real,
     burn_time::Real,
-    airbreak_cd::Real,
-    airbreak_area::Real,
+    airbrake_cd::Real,
+    airbrake_area::Real,
     drogue_cd::Real,
     drogue_area::Real,
     main_cd::Real,
     main_area::Real,
     launch_angle::Real,
     launch_altitude::Real,
-    rail_length::Real
+    rail_length::Real,
+    airbrake_options::String = "noairbrake" #valores: "noairbrake", "justairbrake", "fulllogic" (implementar)
 )
     X₀ = StateVector(0, 0, 0, 0)
 
@@ -240,8 +241,8 @@ module InParameters
     rocket_area_c   = InputConverter("Area transversal do foguete (m^2)", x -> parse(Float64, x))
     rocket_diam_c   = InputConverter("Diametro do foguete (m)",      x -> π/4*parse(Float64, x)^2)
     rocket_radius_c = InputConverter("Raio do foguete (m)"    ,      x -> π*parse(Float64, x)^2)
-    airbreak_cd_c   = InputConverter("Cd do airbreak", x -> parse(Float64, x))
-    airbreak_area_c = InputConverter("Area do airbreak (m^2)", x -> parse(Float64, x))
+    airbrake_cd_c   = InputConverter("Cd do airbrake", x -> parse(Float64, x))
+    airbrake_area_c = InputConverter("Area do airbrake (m^2)", x -> parse(Float64, x))
     thrust_c        = InputConverter("Empuxo (N)",                   x -> parse(Float64, x))
     thrust_table_c  = InputConverter("Tabela de Empuxo",         (fname, proj) ->
                             (fname == "tabela") ?
@@ -265,8 +266,8 @@ module InParameters
     rocket_cd       = InputParameter{Union{Float64, Matrix{Float64}}}(
             "coeficiente de arrasto", [rocket_cd_c, rocket_cd_table_c])
     rocket_area     = InputParameter{Float64}("area transversal", [rocket_area_c, rocket_diam_c, rocket_radius_c])
-    airbreak_cd     = InputParameter{Float64}("Cd do airbreak", [airbreak_cd_c])
-    airbreak_area   = InputParameter{Float64}("Area do airbreak", [airbreak_area_c])
+    airbrake_cd     = InputParameter{Float64}("Cd do airbrake", [airbrake_cd_c])
+    airbrake_area   = InputParameter{Float64}("Area do airbrake", [airbrake_area_c])
     thrust          = InputParameter{Union{Float64, Matrix{Float64}}}(
             "empuxo", [thrust_c, thrust_table_c])
     propellant_mass = InputParameter{Float64}("massa de propelente", [propellant_mass_c])
@@ -284,8 +285,8 @@ module InParameters
     parameter_list = [empty_mass     ,
                       rocket_cd      ,
                       rocket_area    ,
-                      airbreak_cd    ,
-                      airbreak_area  ,
+                      airbrake_cd    ,
+                      airbrake_area  ,
                       thrust         ,
                       propellant_mass,
                       burn_time      ,
@@ -352,8 +353,8 @@ function read_project(projeto::String)
             thrust          = InParameters.thrust.value         ,
             propellant_mass = InParameters.propellant_mass.value,
             burn_time       = InParameters.burn_time.value      ,
-            airbreak_cd     = InParameters.airbreak_cd.value    ,
-            airbreak_area   = InParameters.airbreak_area.value  ,
+            airbrake_cd     = InParameters.airbrake_cd.value    ,
+            airbrake_area   = InParameters.airbrake_area.value  ,
             drogue_cd       = InParameters.drogue_cd.value      ,
             drogue_area     = InParameters.drogue_area.value    ,
             main_cd         = InParameters.main_cd.value        ,

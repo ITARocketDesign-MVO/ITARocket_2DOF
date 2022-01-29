@@ -153,7 +153,7 @@ A indexação é feita com os nomes das fases:
 * "rail"
 * "thrusted"
 * "ballistic"
-* "airbreak"
+* "airbrake"
 * "drogue"
 * "main"
 

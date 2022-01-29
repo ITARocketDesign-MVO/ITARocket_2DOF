@@ -33,7 +33,7 @@ function text_output(res::SimResults, dt::Float64=0.1; project::String = ".")
     
     rail_exit_vel = vel_mod(res["rail"][end])
     drogue_open_vel = vel_mod(res["drogue"][1])
-    # fase airbreak tá vazia, consertar
+    # fase airbrake tá vazia, consertar
     drogue_open_acc = vel_mod(res[res.phase_transition_times[4]] - res[res.phase_transition_times[4] - res.dt]) / res.dt
     main_open_vel = vel_mod(res["main"][1]);
     main_open_acc = vel_mod(res[res.phase_transition_times[5]] - res[res.phase_transition_times[5] - res.dt]) / res.dt
