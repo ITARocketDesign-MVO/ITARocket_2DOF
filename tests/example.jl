@@ -1,7 +1,7 @@
 
 #tudo que precisar ser testado, fazer nessa pasta
 using ITARocket_2DOF
-#criação de condições iniciais:
+##criação de condições iniciais:
 
 
 X₀, rocket, env = manual_input(
@@ -20,7 +20,8 @@ X₀, rocket, env = manual_input(
     launch_angle = 85,
     launch_altitude = 645,
     rail_length = 5,
-    airbrake_options = "justairbrake"
+    airbrake_option = "noairbrake",
+    airbrake_opening_logic = (t, X, rocket, env) -> (X.y >= -7.9528299946541585 * X.vy + 3403.5517928697045)
 )
 
 ## Voo
