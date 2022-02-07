@@ -45,14 +45,10 @@ function noairbrake_ballistic_end(t::Float64, X::StateVector, rocket::Rocket, en
     return X.vy ≤ 0
 end
 
-#implementar lógica do airbrake
-function ballistic_end(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
-    return true
-end
-
+#a condição de término da fase balística depende do foguete. Portanto é passada como input
 
 """
-    justairbrake_airbrake_end(X::StateVector, rocket::Rocket, env::Environment, t::Float64)
+    airbrake_end(X::StateVector, rocket::Rocket, env::Environment, t::Float64)
 
 Verifica se a fase de voo sob efeito do airbrake terminou.
 

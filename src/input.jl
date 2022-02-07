@@ -43,7 +43,8 @@ function manual_input(;
     launch_angle::Real,
     launch_altitude::Real,
     rail_length::Real,
-    airbrake_option::String = "noairbrake" #valores: "noairbrake", "justairbrake", "fulllogic" (implementar)
+    airbrake_option::String = "noairbrake", #valores: "noairbrake", "justairbrake", "fulllogic"
+    airbrake_opening_logic::Function = x -> x
 )
     X₀ = StateVector(0, 0, 0, 0)
 
@@ -70,7 +71,9 @@ function manual_input(;
         airbrake_phase = FlightPhase("airbrake", acc_airbrake, airbrake_end    , Aed(airbrake_cd, airbrake_area))
         phases = [rail_phase, thrusted_phase, airbrake_phase, drogue_phase, main_phase]
     elseif airbrake_option == "fulllogic"
-        error("Not yet implemented")
+        ballistic_phase = FlightPhase("ballistic", acc_ballistic, airbrake_opening_logic, Aed(rocket_cd, rocket_area))
+        airbrake_phase = FlightPhase("airbrake", acc_airbrake, airbrake_end    , Aed(airbrake_cd, airbrake_area))
+        phases = [rail_phase, thrusted_phase, ballistic_phase, airbrake_phase, drogue_phase, main_phase]
     else
         error("Possible values for airbrake_option are \"noairbrake\", \"justairbrake\", \"fulllogic\"")
     end
@@ -269,6 +272,7 @@ module InParameters
     rail_length_c      = InputConverter("Comprimento do trilho (m)",  x -> parse(Float64, x))
     rail_length_ft_c   = InputConverter("Comprimento do trilho (ft)",  x -> 0.3048*parse(Float64, x))
     airbrake_options_c = InputConverter("Opção de airbrake", x -> x)
+    airbrake_opening_logic_c = InputConverter("Lógica de abertura do airbrake", x -> eval(Meta.parse(x)))
 
     #lista de parâmetros do foguete. São os mesmos que na manual_input
     empty_mass      = InputParameter{Float64}("massa vazia", [empty_mass_c])
@@ -289,6 +293,7 @@ module InParameters
     launch_altitude = InputParameter{Float64}("altitude de lançamento", [launch_altitude_c])
     rail_length     = InputParameter{Float64}("comprimento do trilho", [rail_length_c    ])
     airbrake_option = InputParameter{String}("Opção de airbrake", [airbrake_options_c])
+    airbrake_opening_logic = InputParameter{Function}("Lógica de abertura do airbrake", [airbrake_opening_logic_c])
     #lista de REFERENCIAS aos parâmtros para fácil iteração.
     #obs: a alteração dos elementos dessa lista altera as variáveis acima também!
     parameter_list = [empty_mass     ,
@@ -306,7 +311,8 @@ module InParameters
                       launch_angle   ,
                       launch_altitude,
                       rail_length    ,
-                      airbrake_option]
+                      airbrake_option,
+                      airbrake_opening_logic]
     export parameter_list, param, validate_inputs, validate_line
 end
 
@@ -372,7 +378,8 @@ function read_project(projeto::String)
             launch_angle    = InParameters.launch_angle.value   ,
             launch_altitude = InParameters.launch_altitude.value,
             rail_length     = InParameters.rail_length.value    ,
-            airbrake_option = InParameters.airbrake_option.value    
+            airbrake_option = InParameters.airbrake_option.value,
+            airbrake_opening_logic = InParameters.airbrake_opening_logic.value
         )
 end
 
