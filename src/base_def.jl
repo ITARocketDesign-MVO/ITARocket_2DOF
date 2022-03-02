@@ -114,6 +114,7 @@ struct Environment
     rail::Rail
     #altitude de lançamento, acima do nível do mar
     launch_altittude::Real
+    Patm::Function
 end
 
 "Representação dos dados obtidos da simulação."

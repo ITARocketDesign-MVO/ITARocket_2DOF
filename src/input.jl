@@ -50,7 +50,7 @@ function manual_input(;
 
     rail = Rail(rail_length, launch_angle, 0.03)
 
-    env = Environment(AmbientConditions.g, AmbientConditions.rho, AmbientConditions.Vsom, rail, launch_altitude)
+    env = Environment(AmbientConditions.g, AmbientConditions.rho, AmbientConditions.Vsom, rail, launch_altitude, AmbientConditions.Patm)
 
     drogue = Aed(drogue_cd, drogue_area)
     main = Aed(main_cd, main_area)
