@@ -44,7 +44,8 @@ function manual_input(;
     launch_altitude::Real,
     rail_length::Real,
     airbrake_option::String = "noairbrake", #valores: "noairbrake", "justairbrake", "fulllogic"
-    airbrake_opening_logic::Function = x -> x
+    airbrake_opening_logic::Function = x -> x,
+    nozzle_area::Real
 )
     X₀ = StateVector(0, 0, 0, 0)
 
@@ -77,7 +78,7 @@ function manual_input(;
     else
         error("Possible values for airbrake_option are \"noairbrake\", \"justairbrake\", \"fulllogic\"")
     end
-    rocket = Rocket(empty_mass, motor, phases)
+    rocket = Rocket(empty_mass, motor, phases, nozzle_area)
 
     return X₀, rocket, env
 end

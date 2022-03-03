@@ -92,6 +92,7 @@ struct Rocket
     empty_mass::Real
     propulsion::Propulsion
     flight_phases::Vector{FlightPhase}
+    nozzle_area::Real
 end
 
 "Representação da rampa de lançamento."

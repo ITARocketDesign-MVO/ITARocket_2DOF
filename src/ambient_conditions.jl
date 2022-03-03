@@ -8,7 +8,7 @@ Calcula a velocidade do som a uma altitude h acima do nível do mar.
 Reta ajustada a partir dos dados em https://www.engineeringtoolbox.com/elevation-speed-sound-air-d_1534.html
 """
 function Vsom(h::Float64)
-    return 340.6147266777097 - 0.004065762999474718*h
+    return sqrt(1.4 * 8314.32 * (288.15 - 0.0065 * (6356766 * h) / (6356766 + h)) / 28.9644)
 end
 
 """
@@ -16,10 +16,10 @@ end
 
 Calcula a densidade do ar a uma altitude h acima do nível do mar.
 
-Curva ajustada a partir de: https://www.engineeringtoolbox.com/standard-atmosphere-d_604.html
+Curva encontrada no livro: "U.S Standard Atmosphere 1976"
 """
 function rho(h::Float64)
-    return 1.2228930069930133 - 0.00011386139860140224*h + 3.314685314685659e-9*h^2
+    return Patm(h) * 28.9644/(8314.32 * (288.15 - 0.0065 * (6356766 * h) / (6356766 + h)))
 end
 
 """
