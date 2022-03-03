@@ -274,6 +274,9 @@ module InParameters
     rail_length_ft_c   = InputConverter("Comprimento do trilho (ft)",  x -> 0.3048*parse(Float64, x))
     airbrake_options_c = InputConverter("Opção de airbrake", x -> x)
     airbrake_opening_logic_c = InputConverter("Lógica de abertura do airbrake", x -> eval(Meta.parse(x)))
+    nozzle_area_c = InputConverter("Area do bocal (m^2)", x -> parse(Float64, x))
+    nozzle_diam_c = InputConverter("Raio do bocal (m)", x-> π*parse(Float64, x))
+    nozzle_radius_c = InputConverter("Raio do bocal (m)", x-> π/4*parse(Float64, x))
 
     #lista de parâmetros do foguete. São os mesmos que na manual_input
     empty_mass      = InputParameter{Float64}("massa vazia", [empty_mass_c])
@@ -295,6 +298,7 @@ module InParameters
     rail_length     = InputParameter{Float64}("comprimento do trilho", [rail_length_c    ])
     airbrake_option = InputParameter{String}("Opção de airbrake", [airbrake_options_c])
     airbrake_opening_logic = InputParameter{Function}("Lógica de abertura do airbrake", [airbrake_opening_logic_c])
+    nozzle_area     = InputParameter{String}("área do bocal", [nozzle_area_c, nozzle_diam_c, nozzle_radius_c])
     #lista de REFERENCIAS aos parâmtros para fácil iteração.
     #obs: a alteração dos elementos dessa lista altera as variáveis acima também!
     parameter_list = [empty_mass     ,
@@ -313,7 +317,8 @@ module InParameters
                       launch_altitude,
                       rail_length    ,
                       airbrake_option,
-                      airbrake_opening_logic]
+                      airbrake_opening_logic,
+                      nozzle_area]
     export parameter_list, param, validate_inputs, validate_line
 end
 
@@ -380,7 +385,8 @@ function read_project(projeto::String)
             launch_altitude = InParameters.launch_altitude.value,
             rail_length     = InParameters.rail_length.value    ,
             airbrake_option = InParameters.airbrake_option.value,
-            airbrake_opening_logic = InParameters.airbrake_opening_logic.value
+            airbrake_opening_logic = InParameters.airbrake_opening_logic.value,
+            nozzle_area     = InParameters.nozzle_area.value
         )
 end
 

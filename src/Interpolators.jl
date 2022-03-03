@@ -30,8 +30,7 @@ function currentCd(X::StateVector, Cd::Matrix{Float64}, env::Environment)
 end
 
 function currentThrust(t::Float64, X::StateVector, rocket::Rocket, env::Environment)
-    currentThrust(t, rocket.propulsion.thrust) - env.Patm(X.y) * rocket.flight_phases
-    return currentThrust(t, rocket.propulsion.thrust)
+    return currentThrust(t, rocket.propulsion.thrust) - env.Patm(X.y) * rocket.nozzle_area
 end
 
 function currentThrust(t::Float64, thrust::Real)
