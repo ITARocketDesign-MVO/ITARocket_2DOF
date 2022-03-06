@@ -11,7 +11,9 @@ X₀, rocket, env = manual_input(
     thrust = 3000,
     propellant_mass = 4.56,
     burn_time = 6.74,
-    airbrake_cd = 1.3,
+    airbrake_cd = [0 0.7
+                    0.5 1.2
+                    1.5 1.7],
     airbrake_area = 2*pi*(0.079)^2,
     drogue_cd = 1.5,
     drogue_area = 0.7,
@@ -20,7 +22,7 @@ X₀, rocket, env = manual_input(
     launch_angle = 85,
     launch_altitude = 645,
     rail_length = 5,
-    airbrake_option = "noairbrake",
+    airbrake_option = "fulllogic",
     airbrake_opening_logic = (t, X, rocket, env) -> (X.y >= -7.9528299946541585 * X.vy + 3403.5517928697045),
     nozzle_area = pi*(0.04)^2
 )

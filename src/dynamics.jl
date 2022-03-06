@@ -13,7 +13,7 @@ function acc_rail(t::Float64, X::StateVector, rocket::Rocket, env::Environment, 
     W        = M * env.g(X.y+env.launch_altittude) 
     #F(resistencia do ar)=1/2*ρ*S*Cd*v^2
     Drag     = 1/2 * env.ρ(X.y+env.launch_altittude) * rocket.flight_phases[phase].aed.area *
-                             currentCd(X, rocket.flight_phases[phase].aed.Cd, env) * (X.vx^2 + X.vy^2) 
+                             currentCd(X, rocket, env, phase) * (X.vx^2 + X.vy^2) 
     #Força normal
     N        = W * cosd(θ) 
     #atrito com a rampa
@@ -35,7 +35,7 @@ function acc_thrusted(t::Float64, X::StateVector, rocket::Rocket, env::Environme
     W = M * env.g(X.y+env.launch_altittude)
     Thrust = currentThrust(t, X, rocket, env)
     Drag = 1/2 * env.ρ(X.y+env.launch_altittude) * rocket.flight_phases[phase].aed.area *
-                                     currentCd(X, rocket, env) * (X.vx^2 + X.vy^2)
+                                    currentCd(X, rocket, env, phase) * (X.vx^2 + X.vy^2)
 
     Fx = cosθ * (Thrust - Drag)
     Fy = sinθ * (Thrust - Drag) - W
@@ -49,7 +49,7 @@ function acc_ballistic(t::Float64, X::StateVector, rocket::Rocket, env::Environm
     
     W = M * env.g(X.y+env.launch_altittude)
     Drag = 1/2 * env.ρ(X.y+env.launch_altittude) * rocket.flight_phases[phase].aed.area *
-                                     currentCd(X, rocket, env) * (X.vx^2 + X.vy^2)
+                                    currentCd(X, rocket, env, phase) * (X.vx^2 + X.vy^2)
 
     Fx = cosθ * ( - Drag)
     Fy = sinθ * ( - Drag) - W
@@ -64,7 +64,7 @@ function acc_airbrake(t::Float64, X::StateVector, rocket::Rocket, env::Environme
     
     W = M * env.g(X.y+env.launch_altittude)
     Drag = 1/2 * env.ρ(X.y+env.launch_altittude) * rocket.flight_phases[phase].aed.area *
-                                    rocket.flight_phases[phase].aed.Cd * (X.vx^2 + X.vy^2)
+                                    currentCd(X, rocket, env, phase) * (X.vx^2 + X.vy^2)
 
     Fx = -cosθ * Drag
     Fy = -sinθ * Drag - W
@@ -79,7 +79,7 @@ function acc_drogue(t::Float64, X::StateVector, rocket::Rocket, env::Environment
     
     W = M * env.g(X.y+env.launch_altittude)
     Drag = 1/2 * env.ρ(X.y+env.launch_altittude) * rocket.flight_phases[phase].aed.area *
-                                    rocket.flight_phases[phase].aed.Cd * (X.vx^2 + X.vy^2)
+                                    currentCd(X, rocket, env, phase) * (X.vx^2 + X.vy^2)
 
     Fx = -cosθ * Drag
     Fy = -sinθ * Drag - W
@@ -94,7 +94,7 @@ function acc_main(t::Float64, X::StateVector, rocket::Rocket, env::Environment, 
     
     W = M * env.g(X.y+env.launch_altittude)
     Drag = 1/2 * env.ρ(X.y+env.launch_altittude) * rocket.flight_phases[phase].aed.area * 
-                                    rocket.flight_phases[phase].aed.Cd * (X.vx^2 + X.vy^2)
+                                    currentCd(X, rocket, env, phase) * (X.vx^2 + X.vy^2)
 
     Fx = -cosθ * Drag
     Fy = -sinθ * Drag - W
