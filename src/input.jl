@@ -34,7 +34,7 @@ function manual_input(;
     thrust::Union{Real, Matrix{<:Real}},
     propellant_mass::Real,
     burn_time::Real,
-    airbrake_cd::Real,
+    airbrake_cd::Union{Real, Matrix{<:Real}},
     airbrake_area::Real,
     drogue_cd::Real,
     drogue_area::Real,
