@@ -298,7 +298,7 @@ module InParameters
     rail_length     = InputParameter{Float64}("comprimento do trilho", [rail_length_c    ])
     airbrake_option = InputParameter{String}("Opção de airbrake", [airbrake_options_c])
     airbrake_opening_logic = InputParameter{Function}("Lógica de abertura do airbrake", [airbrake_opening_logic_c])
-    nozzle_area     = InputParameter{String}("área do bocal", [nozzle_area_c, nozzle_diam_c, nozzle_radius_c])
+    nozzle_area     = InputParameter{Float64}("área do bocal", [nozzle_area_c, nozzle_diam_c, nozzle_radius_c])
     #lista de REFERENCIAS aos parâmtros para fácil iteração.
     #obs: a alteração dos elementos dessa lista altera as variáveis acima também!
     parameter_list = [empty_mass     ,
