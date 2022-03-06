@@ -275,7 +275,7 @@ module InParameters
     airbrake_options_c = InputConverter("Opção de airbrake", x -> x)
     airbrake_opening_logic_c = InputConverter("Lógica de abertura do airbrake", x -> eval(Meta.parse(x)))
     nozzle_area_c = InputConverter("Area do bocal (m^2)", x -> parse(Float64, x))
-    nozzle_diam_c = InputConverter("Raio do bocal (m)", x-> π*parse(Float64, x))
+    nozzle_diam_c = InputConverter("Diametro do bocal (m)", x-> π*parse(Float64, x))
     nozzle_radius_c = InputConverter("Raio do bocal (m)", x-> π/4*parse(Float64, x))
 
     #lista de parâmetros do foguete. São os mesmos que na manual_input

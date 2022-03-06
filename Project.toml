@@ -1,7 +1,7 @@
 name = "ITARocket_2DOF"
 uuid = "0fd8982e-bb0b-4cd9-bae8-d36e97470e23"
 authors = []
-version = "1.4.0"
+version = "1.4.1s"
 
 [deps]
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
