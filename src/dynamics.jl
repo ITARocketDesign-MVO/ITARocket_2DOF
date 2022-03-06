@@ -21,8 +21,8 @@ function acc_rail(t::Float64, X::StateVector, rocket::Rocket, env::Environment, 
 
     #forças resultantes em x e em y
     #há esse max para não acontecer do foguete "cair e atravessar o chão"
-    Fx = max(cosd(θ) * (currentThrust(t, rocket) - Drag - Friction) - sind(θ) * N, 0)
-    Fy = max(sind(θ) * (currentThrust(t, rocket) - Drag - Friction) + cosd(θ) * N - W, 0)  
+    Fx = max(cosd(θ) * (currentThrust(t, X, rocket, env) - Drag - Friction) - sind(θ) * N, 0)
+    Fy = max(sind(θ) * (currentThrust(t, X, rocket, env) - Drag - Friction) + cosd(θ) * N - W, 0)  
     
     return Fx/M, Fy/M
 end
@@ -33,7 +33,7 @@ function acc_thrusted(t::Float64, X::StateVector, rocket::Rocket, env::Environme
     sinθ = X.vy/sqrt(X.vx^2 + X.vy^2)
 
     W = M * env.g(X.y+env.launch_altittude)
-    Thrust = currentThrust(t, rocket)
+    Thrust = currentThrust(t, X, rocket, env)
     Drag = 1/2 * env.ρ(X.y+env.launch_altittude) * rocket.flight_phases[phase].aed.area *
                                      currentCd(X, rocket, env) * (X.vx^2 + X.vy^2)
 

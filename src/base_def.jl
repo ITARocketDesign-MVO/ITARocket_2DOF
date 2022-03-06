@@ -92,6 +92,7 @@ struct Rocket
     empty_mass::Real
     propulsion::Propulsion
     flight_phases::Vector{FlightPhase}
+    nozzle_area::Real
 end
 
 "Representação da rampa de lançamento."
@@ -114,6 +115,7 @@ struct Environment
     rail::Rail
     #altitude de lançamento, acima do nível do mar
     launch_altittude::Real
+    Patm::Function
 end
 
 "Representação dos dados obtidos da simulação."

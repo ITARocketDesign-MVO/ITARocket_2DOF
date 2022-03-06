@@ -21,7 +21,8 @@ X₀, rocket, env = manual_input(
     launch_altitude = 645,
     rail_length = 5,
     airbrake_option = "noairbrake",
-    airbrake_opening_logic = (t, X, rocket, env) -> (X.y >= -7.9528299946541585 * X.vy + 3403.5517928697045)
+    airbrake_opening_logic = (t, X, rocket, env) -> (X.y >= -7.9528299946541585 * X.vy + 3403.5517928697045),
+    nozzle_area = pi*(0.04)^2
 )
 
 ## Voo
