@@ -15,7 +15,7 @@ ordem estritamente crescente.
 function interpolate_table(table::Matrix{Float64}, x_query::Float64)
     if !(table[1,1] <= x_query <= table[end, 1])
         #joga erro que pode ser capturado para especficar comportamento
-        throw(BoundsError("Query $x_query out of bounds [$(table[1,1]), $(table[end, 1])"))
+        throw(BoundsError(table, x_query))
     end
     #verifica se a query pertence à tabela
     query_index = findfirst(x -> x == x_query, table[:, 1])
@@ -42,7 +42,7 @@ function internalcurrentCd(X::StateVector, Cd::Matrix{Float64}, env::Environment
     v=sqrt(X.vx^2+X.vy^2)                 #velocidade do foguete
      
     N_mach = v / env.v_sound(X.y + env.launch_altittude)
-    
+    N_mach = clamp(N_mach, Cd[1,1], Cd[end,1])
     return interpolate_table(Cd, N_mach)
 end
 
