@@ -25,7 +25,7 @@ function interpolate_table(table::Matrix{Float64}, x_query::Float64)
 
     #busca o intervalo da query
     index_before_query = findlast(x -> x < x_query, table[:, 1])
-    return table[index_before_query, 2] + (table[index_before_query+1, 2] - table[index_before_query]) *
+    return table[index_before_query, 2] + (table[index_before_query+1, 2] - table[index_before_query, 2]) *
                                 (x_query - table[index_before_query, 1]) / (table[index_before_query+1, 1])
 end
 
