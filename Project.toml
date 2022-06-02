@@ -4,4 +4,5 @@ authors = []
 version = "1.4.4"
 
 [deps]
+GoogleSheets = "831f653e-6dbc-49a2-ac93-eebfaa09c6e6"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
