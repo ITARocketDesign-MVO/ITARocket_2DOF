@@ -1,9 +1,10 @@
-
 #tudo que precisar ser testado, fazer nessa pasta
 using ITARocket_2DOF
-##criação de condições iniciais:
 
+## Input online
+X₀, rocket, env = online_input("1TAA_Smb9670jyX4x2cwONw7SeEl74sQWG3ybIVIn5yk")
 
+## Input manual
 # X₀, rocket, env = manual_input(
 #     empty_mass = 27.0,
 #     rocket_cd = 0.45,
@@ -27,10 +28,11 @@ using ITARocket_2DOF
 #     nozzle_area = pi*(0.04)^2
 # )
 
-X₀, rocket, env = read_project("Montenegro-1")
+## Input por arquivo
+# X₀, rocket, env = read_project("Montenegro-1")
 
 ## Voo
-allX = simulate(X₀, rocket, env)
+allX = simulate(X₀, rocket, env, end_phase_index=1)
 ##
 # text_output(allX)
 # height_time(allX)
