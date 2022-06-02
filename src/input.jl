@@ -2,7 +2,7 @@
 module Inputs
 #módulo para colocar os parâmetros do foguete
 using ..BaseDefinitions
-export manual_input, read_project, read_cd, read_thrust
+export manual_input, read_project, online_input, read_cd, read_thrust
 
 include("end_conditions.jl")
 using .EndConditions
@@ -242,85 +242,85 @@ end
 #                   Definições específicas do foguete
 
 #lista de conversores
-empty_mass_c = InputConverter("Massa vazia (kg)", x -> parse(Float64, x))
-rocket_cd_c = InputConverter("Cd do foguete", x -> parse(Float64, x))
-rocket_cd_table_c = InputConverter("Tabela de Cd do foguete", (fname, proj) ->
-    (fname == "tabela") ?
-    parentmodule(InParameters).read_cd(project=proj)
-    :
-    parentmodule(InParameters).read_cd(fname, project=proj)
-)
-rocket_area_c = InputConverter("Area transversal do foguete (m^2)", x -> parse(Float64, x))
-rocket_diam_c = InputConverter("Diametro do foguete (m)", x -> π / 4 * parse(Float64, x)^2)
-rocket_radius_c = InputConverter("Raio do foguete (m)", x -> π * parse(Float64, x)^2)
-airbrake_cd_c = InputConverter("Cd do airbrake", x -> parse(Float64, x))
-airbrake_area_c = InputConverter("Area do airbrake (m^2)", x -> parse(Float64, x))
-thrust_c = InputConverter("Empuxo (N)", x -> parse(Float64, x))
-thrust_table_c = InputConverter("Tabela de Empuxo", (fname, proj) ->
-    (fname == "tabela") ?
-    parentmodule(InParameters).read_thrust(project=proj)
-    :
-    parentmodule(InParameters).read_thrust(fname, project=proj)
-)
-propellant_mass_c = InputConverter("Massa de propelente (kg)", x -> parse(Float64, x))
-burn_time_c = InputConverter("Tempo de queima (s)", x -> parse(Float64, x))
-drogue_cd_c = InputConverter("Cd do drogue", x -> parse(Float64, x))
-drogue_area_c = InputConverter("Area do drogue (m^2)", x -> parse(Float64, x))
-main_cd_c = InputConverter("Cd do main", x -> parse(Float64, x))
-main_area_c = InputConverter("Area do main (m^2)", x -> parse(Float64, x))
-launch_angle_c = InputConverter("Angulo de lancamento (graus)", x -> parse(Float64, x))
-launch_altitude_c = InputConverter("Altitude de lancamento (m)", x -> parse(Float64, x))
-rail_length_c = InputConverter("Comprimento do trilho (m)", x -> parse(Float64, x))
-rail_length_ft_c = InputConverter("Comprimento do trilho (ft)", x -> 0.3048 * parse(Float64, x))
-airbrake_options_c = InputConverter("Opção de airbrake", x -> x)
-airbrake_opening_logic_c = InputConverter("Lógica de abertura do airbrake", x -> eval(Meta.parse(x)))
-nozzle_area_c = InputConverter("Area do bocal (m^2)", x -> parse(Float64, x))
-nozzle_diam_c = InputConverter("Diametro do bocal (m)", x -> π / 4 * parse(Float64, x)^2)
-nozzle_radius_c = InputConverter("Raio do bocal (m)", x -> π * parse(Float64, x)^2)
+    empty_mass_c = InputConverter("Massa vazia (kg)", x -> parse(Float64, x))
+    rocket_cd_c = InputConverter("Cd do foguete", x -> parse(Float64, x))
+    rocket_cd_table_c = InputConverter("Tabela de Cd do foguete", (fname, proj) ->
+        (fname == "tabela") ?
+        parentmodule(InParameters).read_cd(project=proj)
+        :
+        parentmodule(InParameters).read_cd(fname, project=proj)
+    )
+    rocket_area_c = InputConverter("Area transversal do foguete (m^2)", x -> parse(Float64, x))
+    rocket_diam_c = InputConverter("Diametro do foguete (m)", x -> π / 4 * parse(Float64, x)^2)
+    rocket_radius_c = InputConverter("Raio do foguete (m)", x -> π * parse(Float64, x)^2)
+    airbrake_cd_c = InputConverter("Cd do airbrake", x -> parse(Float64, x))
+    airbrake_area_c = InputConverter("Area do airbrake (m^2)", x -> parse(Float64, x))
+    thrust_c = InputConverter("Empuxo (N)", x -> parse(Float64, x))
+    thrust_table_c = InputConverter("Tabela de Empuxo", (fname, proj) ->
+        (fname == "tabela") ?
+        parentmodule(InParameters).read_thrust(project=proj)
+        :
+        parentmodule(InParameters).read_thrust(fname, project=proj)
+    )
+    propellant_mass_c = InputConverter("Massa de propelente (kg)", x -> parse(Float64, x))
+    burn_time_c = InputConverter("Tempo de queima (s)", x -> parse(Float64, x))
+    drogue_cd_c = InputConverter("Cd do drogue", x -> parse(Float64, x))
+    drogue_area_c = InputConverter("Area do drogue (m^2)", x -> parse(Float64, x))
+    main_cd_c = InputConverter("Cd do main", x -> parse(Float64, x))
+    main_area_c = InputConverter("Area do main (m^2)", x -> parse(Float64, x))
+    launch_angle_c = InputConverter("Angulo de lancamento (graus)", x -> parse(Float64, x))
+    launch_altitude_c = InputConverter("Altitude de lancamento (m)", x -> parse(Float64, x))
+    rail_length_c = InputConverter("Comprimento do trilho (m)", x -> parse(Float64, x))
+    rail_length_ft_c = InputConverter("Comprimento do trilho (ft)", x -> 0.3048 * parse(Float64, x))
+    airbrake_options_c = InputConverter("Opção de airbrake", x -> x)
+    airbrake_opening_logic_c = InputConverter("Lógica de abertura do airbrake", x -> eval(Meta.parse(x)))
+    nozzle_area_c = InputConverter("Area do bocal (m^2)", x -> parse(Float64, x))
+    nozzle_diam_c = InputConverter("Diametro do bocal (m)", x -> π / 4 * parse(Float64, x)^2)
+    nozzle_radius_c = InputConverter("Raio do bocal (m)", x -> π * parse(Float64, x)^2)
 
-#lista de parâmetros do foguete. São os mesmos que na manual_input
-empty_mass = InputParameter{Float64}("massa vazia", [empty_mass_c])
-rocket_cd = InputParameter{Union{Float64,Matrix{Float64}}}(
-    "coeficiente de arrasto", [rocket_cd_c, rocket_cd_table_c])
-rocket_area = InputParameter{Float64}("area transversal", [rocket_area_c, rocket_diam_c, rocket_radius_c])
-airbrake_cd = InputParameter{Float64}("Cd do airbrake", [airbrake_cd_c])
-airbrake_area = InputParameter{Float64}("Area do airbrake", [airbrake_area_c])
-thrust = InputParameter{Union{Float64,Matrix{Float64}}}(
-    "empuxo", [thrust_c, thrust_table_c])
-propellant_mass = InputParameter{Float64}("massa de propelente", [propellant_mass_c])
-burn_time = InputParameter{Float64}("tempo de queima", [burn_time_c])
-drogue_cd = InputParameter{Float64}("Cd do drogue", [drogue_cd_c])
-drogue_area = InputParameter{Float64}("área do drogue", [drogue_area_c])
-main_cd = InputParameter{Float64}("Cd do main", [main_cd_c])
-main_area = InputParameter{Float64}("área do main", [main_area_c])
-launch_angle = InputParameter{Float64}("ângulo de lançamento", [launch_angle_c])
-launch_altitude = InputParameter{Float64}("altitude de lançamento", [launch_altitude_c])
-rail_length = InputParameter{Float64}("comprimento do trilho", [rail_length_c])
-airbrake_option = InputParameter{String}("Opção de airbrake", [airbrake_options_c])
-airbrake_opening_logic = InputParameter{Function}("Lógica de abertura do airbrake", [airbrake_opening_logic_c])
-nozzle_area = InputParameter{Float64}("área do bocal", [nozzle_area_c, nozzle_diam_c, nozzle_radius_c])
-#lista de REFERENCIAS aos parâmtros para fácil iteração.
-#obs: a alteração dos elementos dessa lista altera as variáveis acima também!
-parameter_list = [empty_mass,
-    rocket_cd,
-    rocket_area,
-    airbrake_cd,
-    airbrake_area,
-    thrust,
-    propellant_mass,
-    burn_time,
-    drogue_cd,
-    drogue_area,
-    main_cd,
-    main_area,
-    launch_angle,
-    launch_altitude,
-    rail_length,
-    airbrake_option,
-    airbrake_opening_logic,
-    nozzle_area]
-export parameter_list, param, validate_inputs, validate_line
-end
+    #lista de parâmetros do foguete. São os mesmos que na manual_input
+    empty_mass = InputParameter{Float64}("massa vazia", [empty_mass_c])
+    rocket_cd = InputParameter{Union{Float64,Matrix{Float64}}}(
+        "coeficiente de arrasto", [rocket_cd_c, rocket_cd_table_c])
+    rocket_area = InputParameter{Float64}("area transversal", [rocket_area_c, rocket_diam_c, rocket_radius_c])
+    airbrake_cd = InputParameter{Float64}("Cd do airbrake", [airbrake_cd_c])
+    airbrake_area = InputParameter{Float64}("Area do airbrake", [airbrake_area_c])
+    thrust = InputParameter{Union{Float64,Matrix{Float64}}}(
+        "empuxo", [thrust_c, thrust_table_c])
+    propellant_mass = InputParameter{Float64}("massa de propelente", [propellant_mass_c])
+    burn_time = InputParameter{Float64}("tempo de queima", [burn_time_c])
+    drogue_cd = InputParameter{Float64}("Cd do drogue", [drogue_cd_c])
+    drogue_area = InputParameter{Float64}("área do drogue", [drogue_area_c])
+    main_cd = InputParameter{Float64}("Cd do main", [main_cd_c])
+    main_area = InputParameter{Float64}("área do main", [main_area_c])
+    launch_angle = InputParameter{Float64}("ângulo de lançamento", [launch_angle_c])
+    launch_altitude = InputParameter{Float64}("altitude de lançamento", [launch_altitude_c])
+    rail_length = InputParameter{Float64}("comprimento do trilho", [rail_length_c])
+    airbrake_option = InputParameter{String}("Opção de airbrake", [airbrake_options_c])
+    airbrake_opening_logic = InputParameter{Function}("Lógica de abertura do airbrake", [airbrake_opening_logic_c])
+    nozzle_area = InputParameter{Float64}("área do bocal", [nozzle_area_c, nozzle_diam_c, nozzle_radius_c])
+    #lista de REFERENCIAS aos parâmtros para fácil iteração.
+    #obs: a alteração dos elementos dessa lista altera as variáveis acima também!
+    parameter_list = [empty_mass,
+        rocket_cd,
+        rocket_area,
+        airbrake_cd,
+        airbrake_area,
+        thrust,
+        propellant_mass,
+        burn_time,
+        drogue_cd,
+        drogue_area,
+        main_cd,
+        main_area,
+        launch_angle,
+        launch_altitude,
+        rail_length,
+        airbrake_option,
+        airbrake_opening_logic,
+        nozzle_area]
+        export parameter_list, param, validate_inputs, validate_line
+    end
 
 using .InParameters
 """
@@ -416,7 +416,7 @@ function online_input(ID_planilha::String)
     planilha = Spreadsheet(ID_planilha)
 
     # Definindo intervalos (range)
-    geral_range = CellRange(planilha, "Geral!A1:B17")
+    geral_range = CellRange(planilha, "Geral!A1:B18")
     cd_rocket_range = CellRange(planilha, "Rocket Cd!A1:B12")
     cd_airbrake_range = CellRange(planilha, "Airbrake Cd!A1:B12")
     prop_thrust_range = CellRange(planilha, "Thrust!A1:B631")
