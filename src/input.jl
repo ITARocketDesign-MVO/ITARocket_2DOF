@@ -417,10 +417,10 @@ function online_input(ID_planilha::String)
     planilha = Spreadsheet(ID_planilha)
 
     # Definindo intervalos (range)
-    geral_range = CellRange(planilha, "Geral!A1:B18")
-    cd_rocket_range = CellRange(planilha, "Rocket Cd!A1:B12")
-    cd_airbrake_range = CellRange(planilha, "Airbrake Cd!A1:B12")
-    prop_thrust_range = CellRange(planilha, "Thrust!A1:B631")
+    geral_range = CellRange(planilha, "Geral!A:B")
+    cd_rocket_range = CellRange(planilha, "Rocket Cd!A:B")
+    cd_airbrake_range = CellRange(planilha, "Airbrake Cd!A:B")
+    prop_thrust_range = CellRange(planilha, "Thrust!A:B")
 
     # Obtendo valores e convertendo vírgula para ponto
     geral = replace.(get(client, geral_range).values, "," => ".")
